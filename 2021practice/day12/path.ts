@@ -2,7 +2,7 @@ export const getNumberOfPermutationsWithUniqueSmallValues = (input: string) => {
     const vertices = input.split("\n");
     const paths = [];
 
-    const traverse = (node: string, path: string[] = []) => {
+    const traverse = (node: string, path: string[]) => {
         // We need to shallowly copy the path
         // rather than mutate it, otherwise
         // we'll erroneously append sibling
@@ -21,12 +21,12 @@ export const getNumberOfPermutationsWithUniqueSmallValues = (input: string) => {
             const canRevisit = neighbour !== 'start' && !neighbour.match(/[a-z]{2}/);
 
             if (canRevisit || !canRevisit && !p.includes(neighbour)) {
-                traverse(neighbour, node === 'start' ? ['start'] : p);
+                traverse(neighbour, p);
             }
         }
     };
 
-    traverse('start');
+    traverse('start', ['start']);
 
     return paths.length;
 };
