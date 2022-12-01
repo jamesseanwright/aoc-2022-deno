@@ -1,0 +1,21 @@
+name: CI
+
+on: push
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ref
+        uses: actions/checkout@v3
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: "1.28.3"
+
+      - name: Check formatting
+        run: "deno fmt --check"
+
+      - name: Run tests
+        run: "deno test -A"
