@@ -15,9 +15,7 @@ export const getNumberOfPermutationsWithUniqueSmallValues = (input: string) => {
       return;
     }
 
-    const neighbours = findNeighbours(vertices, node);
-
-    for (const neighbour of neighbours) {
+    for (const neighbour of findNeighbours(vertices, node)) {
       const canRevisit = neighbour !== "start" && !neighbour.match(/[a-z]{2}/);
 
       if (canRevisit || !canRevisit && !p.includes(neighbour)) {
