@@ -36,6 +36,7 @@ const findNeighbours = (vertices: string[], node: string) =>
     const matches = v.match(
       new RegExp(`${node}\-([a-zA-Z]{2,5})|([a-zA-Z]{2,5})\-${node}`),
     ) || [];
+
     return matches[1] || matches[2];
   })
     .filter(Boolean);
