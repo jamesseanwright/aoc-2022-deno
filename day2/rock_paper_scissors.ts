@@ -1,3 +1,7 @@
+const PLAYER_WIN = 6;
+const PLAYER_LOSS = 0;
+const DRAW = 3;
+
 interface Node<T> {
   value: T;
   previous?: Node<T>;
@@ -23,61 +27,62 @@ const findNode = <T>(head: Node<T>, value: T): Node<T> | undefined => {
   return walk(head);
 };
 
-export const calculateScoreByMoves = (input: string) => {
-  const pairs = input
+const parseInput = (input: string) =>
+  input
     .split("\n")
     .map((row) => row.split(" "))
-    .filter(([opponent, player]) => opponent && player) // for fileline ending
+    .filter(([a, b]) => a && b); // for fileline ending
+
+const getRoundScore = (player: string, opponent: string) => {
+  const moves = findNode(listHead, opponent);
+
+  if (moves?.next?.value === player) {
+    return PLAYER_WIN;
+  }
+
+  if (moves?.previous?.value === player) {
+    return PLAYER_LOSS;
+  }
+
+  return DRAW;
+};
+
+// Calculates the offset from (UTF-16 code point for 'A') - 1 i.e:
+// * 'A' => 1
+// * 'B' => 2
+// * 'C' => 2
+const getMoveScore = (move: string) => move.codePointAt(0)! - 64;
+
+export const calculateScoreByMoves = (input: string) =>
+  parseInput(input)
     .map(([opponent, player]) => [
       opponent,
       String.fromCodePoint(player.codePointAt(0)! - 23), // Normalise player values to match opponent
-    ]);
+    ])
+    .reduce(
+      (score, [opponent, player]) => (
+        score + getRoundScore(player, opponent) + getMoveScore(player)
+      ),
+      0,
+    );
 
-  return pairs.reduce(
-    (score, [opponent, player]) => {
-      let roundScore = 0;
+export const calculateScoreByStrategy = (input: string) =>
+  parseInput(input)
+    .reduce(
+      (score, [opponent, strategy]) => {
+        const node = findNode(listHead, opponent);
+        let move = node?.value;
 
-      if (opponent === player) {
-        roundScore = 3;
-      }
+        switch (strategy) {
+          case "X":
+            move = node?.previous?.value;
+            break;
+          case "Z":
+            move = node?.next?.value;
+            break;
+        }
 
-      const node = findNode(listHead, opponent);
-
-      if (node?.next?.value === player) {
-        roundScore = 6;
-      }
-
-      return score + roundScore + player.codePointAt(0)! - 64;
-    },
-    0,
-  );
-};
-
-export const calculateScoreByStrategy = (input: string) => {
-    const pairs = input
-    .split("\n")
-    .map((row) => row.split(" "))
-    .filter(([opponent, strategy]) => opponent && strategy); // for fileline ending
-
-  return pairs.reduce(
-    (score, [opponent, strategy]) => {
-      let roundScore = 3;
-      let move: string = opponent;
-
-      if (strategy === 'X') {
-        const node = findNode(listHead, opponent)
-        move = node?.previous?.value!;
-        roundScore = 0;
-      }
-
-      if (strategy === 'Z') {
-        const node = findNode(listHead, opponent)
-        move = node?.next?.value!;
-        roundScore = 6;
-      }
-
-      return score + roundScore + move.codePointAt(0)! - 64;
-    },
-    0,
-  );
-};
+        return score + getRoundScore(move!, opponent) + getMoveScore(move!);
+      },
+      0,
+    );

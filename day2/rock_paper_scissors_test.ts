@@ -1,5 +1,8 @@
 import { assertEquals } from "https://deno.land/std@0.166.0/testing/asserts.ts";
-import { calculateScoreByMoves, calculateScoreByStrategy } from "./rock_paper_scissors.ts";
+import {
+  calculateScoreByMoves,
+  calculateScoreByStrategy,
+} from "./rock_paper_scissors.ts";
 
 const exampleInput = Deno.readTextFileSync("./day2/example_input.txt");
 const mainInput = Deno.readTextFileSync("./day2/main_input.txt");
@@ -10,6 +13,6 @@ Deno.test("calculateScoreByMoves() should calculate the correct score assuming t
 });
 
 Deno.test("calculateScoreByStrategy() should calculate the correct score assuming the second item in the pair represents the move the player should make", () => {
-    assertEquals(calculateScoreByStrategy(exampleInput), 12);
-    assertEquals(calculateScoreByStrategy(mainInput), 10398);
-  });
+  assertEquals(calculateScoreByStrategy(exampleInput), 12);
+  assertEquals(calculateScoreByStrategy(mainInput), 10398);
+});
