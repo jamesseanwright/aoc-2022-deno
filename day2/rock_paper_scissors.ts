@@ -19,7 +19,7 @@ const findNode = <T>(head: Node<T>, value: T): Node<T> | undefined => {
   return walk(head);
 };
 
-export const calculateScore = (input: string) => {
+export const calculateScoreByMoves = (input: string) => {
   const pairs = input
     .split("\n")
     .map((row) => row.split(" "))
@@ -48,3 +48,5 @@ export const calculateScore = (input: string) => {
     0,
   );
 };
+
+export const calculateScoreByStrategy = (input: string) => 0;
