@@ -6,4 +6,5 @@ const mainInput = Deno.readTextFileSync("./day2/main_input.txt");
 
 Deno.test("calculateScore() should calculate the correct score for the given input", () => {
   assertEquals(calculateScore(exampleInput), 15);
+  assertEquals(calculateScore(mainInput), 13009);
 });
