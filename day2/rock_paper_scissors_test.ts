@@ -11,5 +11,5 @@ Deno.test("calculateScoreByMoves() should calculate the correct score assuming t
 
 Deno.test("calculateScoreByStrategy() should calculate the correct score assuming the second item in the pair represents the move the player should make", () => {
     assertEquals(calculateScoreByStrategy(exampleInput), 12);
-    assertEquals(calculateScoreByStrategy(mainInput), -1);
+    assertEquals(calculateScoreByStrategy(mainInput), 10398);
   });
