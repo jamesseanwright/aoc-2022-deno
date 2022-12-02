@@ -8,6 +8,6 @@ Deno.test(
   "getPowerConsumption() should return the total power consumption for the given input",
   () => {
     assertEquals(getPowerConsumption(exampleInput), 198);
-    assertEquals(getPowerConsumption(mainInput), -1);
+    assertEquals(getPowerConsumption(mainInput), 4103154);
   },
 );
