@@ -1,8 +1,8 @@
-export const aggregateCommonGroupItemPriorities = (input: string) =>
+export const aggregateCommonRowItemPriorities = (input: string) =>
   input
     .split("\n")
     .filter(Boolean)
-    .map((group) => [
+    .map(group => [
       group.slice(0, group.length / 2),
       group.slice(group.length / 2),
     ])
