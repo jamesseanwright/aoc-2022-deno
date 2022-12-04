@@ -15,5 +15,5 @@ Deno.test("countPairsWithFullyOverlappingRanges() should return the number of pa
 
 Deno.test("countPairsWithPartiallyOverlappingRanges() should return the number of pairs where either bound of one pair falls within the range of the other", () => {
   assertEquals(countPairsWithPartiallyOverlappingRanges(exampleInput), 4);
-  assertEquals(countPairsWithPartiallyOverlappingRanges(mainInput), -1);
+  assertEquals(countPairsWithPartiallyOverlappingRanges(mainInput), 823);
 });
