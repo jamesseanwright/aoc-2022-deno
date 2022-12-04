@@ -11,3 +11,5 @@ export const countPairsWithFullyOverlappingRanges = (input: string) =>
           : total,
       0,
     );
+
+export const countPairsWithPartiallyOverlappingRanges = (input: string) => 0;
