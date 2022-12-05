@@ -1,4 +1,19 @@
-export const arrangeStacks = (input: string) => {
+const buildStack = (rows: string[], i: number) => {
+  const stack: string[] = [];
+
+  for (let j = rows.length - 2; j >= 0; j--) {
+    const [, , item] = [...rows[j].matchAll(/(\s{4})|(\[[A-Z]\])\s?/g)][i] ||
+      [];
+
+    if (item && item.trim()) {
+      stack.push(item);
+    }
+  }
+
+  return stack;
+}
+
+export const arrangeStacks = (input: string, preserveOrder = false) => {
   const [rawStacks, rawCommands] = input.split("\n\n");
 
   const rows = rawStacks.split("\n");
@@ -12,16 +27,7 @@ export const arrangeStacks = (input: string) => {
   const stacks: string[][] = [];
 
   for (let i = 0; i < n; i++) {
-    stacks[i] = [];
-
-    for (let j = rows.length - 2; j >= 0; j--) {
-      const [, , item] = [...rows[j].matchAll(/(\s{4})|(\[[A-Z]\])\s?/g)][i] ||
-        [];
-
-      if (item && item.trim()) {
-        stacks[i].push(item);
-      }
-    }
+    stacks[i] = buildStack(rows, i);
   }
 
   const commands = [...rawCommands.matchAll(/move (\d+) from (\d) to (\d)/g)];
