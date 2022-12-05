@@ -11,14 +11,13 @@ const buildStack = (rows: string[], i: number) => {
   }
 
   return stack;
-}
+};
 
 export const arrangeStacks = (input: string, preserveOrder = false) => {
   const [rawStacks, rawCommands] = input.split("\n\n");
-
   const rows = rawStacks.split("\n");
 
-  const n = Number.parseInt(
+  const nthStack = Number.parseInt(
     [...(rows.at(-1) || "").matchAll(/\s(\d)$/g)]
       .at(-1)
       ?.at(0) || "-1",
@@ -26,7 +25,7 @@ export const arrangeStacks = (input: string, preserveOrder = false) => {
 
   const stacks: string[][] = [];
 
-  for (let i = 0; i < n; i++) {
+  for (let i = 0; i < nthStack; i++) {
     stacks[i] = buildStack(rows, i);
   }
 
@@ -36,14 +35,11 @@ export const arrangeStacks = (input: string, preserveOrder = false) => {
     const count = Number.parseInt(n);
     const from = Number.parseInt(a) - 1;
     const to = Number.parseInt(z) - 1;
-
     let items = stacks[from].splice(stacks[from].length - count, count);
 
-    items = preserveOrder
-      ? items
-      : items.toReversed();
+    items = preserveOrder ? items : items.toReversed();
 
-    stacks[to].push(...items)
+    stacks[to].push(...items);
   }
 
   return stacks;
