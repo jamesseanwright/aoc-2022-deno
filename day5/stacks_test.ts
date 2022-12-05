@@ -5,11 +5,15 @@ const exampleInput = Deno.readTextFileSync("./day5/example_input.txt");
 const mainInput = Deno.readTextFileSync("./day5/main_input.txt");
 
 Deno.test("arrangeStacks() should arrange the stacks by interpreting the given instructions", () => {
-  assertEquals(arrangeStacks(exampleInput), `        [Z]
-        [N]
-        [D]
-[C] [M] [P]
- 1   2   3`);
+  const exampleStacks = arrangeStacks(exampleInput);
 
-  assertEquals(arrangeStacks(mainInput), '??');
+  assertEquals(exampleStacks[0].at(-1), "[C]")
+  assertEquals(exampleStacks[1].at(-1), "[M]")
+  assertEquals(exampleStacks[2].at(-1), "[Z]")
+
+  const mainStacks = arrangeStacks(mainInput);
+
+  for (const stack of mainStacks) {
+    assertEquals(stack.at(-1), "??");
+  }
 });
