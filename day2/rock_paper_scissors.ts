@@ -31,7 +31,7 @@ const parseInput = (input: string) =>
   input
     .split("\n")
     .map((row) => row.split(" "))
-    .filter(([a, b]) => a && b); // for fileline ending
+    .filter(([a, b]) => a && b); // for file line ending
 
 const getRoundScore = (player: string, opponent: string) => {
   const moves = findNode(listHead, opponent);
