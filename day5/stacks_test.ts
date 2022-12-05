@@ -25,19 +25,17 @@ Deno.test("arrangeStacks() should arrange the stacks by interpreting the given i
 Deno.test("arrangeStacks() should preserve the order of moved items when preserveOrder is true", () => {
   const exampleStacks = arrangeStacks(exampleInput, true);
 
-  assertEquals(exampleStacks, [])
-
   assertEquals(exampleStacks[0].at(-1), "[M]");
   assertEquals(exampleStacks[1].at(-1), "[C]");
   assertEquals(exampleStacks[2].at(-1), "[D]");
 
-  // const mainStacks = arrangeStacks(mainInput, true);
+  const mainStacks = arrangeStacks(mainInput, true);
 
-  // assertEquals(
-  //   mainStacks.map((stack) => stack.at(-1))
-  //     .filter(Boolean)
-  //     .map((x) => x?.at(1))
-  //     .join(""),
-  //   "PSNRGBTFT",
-  // );
+  assertEquals(
+    mainStacks.map((stack) => stack.at(-1))
+      .filter(Boolean)
+      .map((x) => x?.at(1))
+      .join(""),
+    "BNTZFPMMW",
+  );
 });

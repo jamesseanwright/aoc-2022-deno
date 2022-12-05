@@ -37,13 +37,13 @@ export const arrangeStacks = (input: string, preserveOrder = false) => {
     const from = Number.parseInt(a) - 1;
     const to = Number.parseInt(z) - 1;
 
-    for (let i = 0; i < count; i++) {
-      const item = stacks[from].pop();
+    let items = stacks[from].splice(stacks[from].length - count, count);
 
-      if (item) {
-        stacks[to].push(item);
-      }
-    }
+    items = preserveOrder
+      ? items
+      : items.toReversed();
+
+    stacks[to].push(...items)
   }
 
   return stacks;
