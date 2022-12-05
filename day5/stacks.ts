@@ -25,5 +25,15 @@ export const arrangeStacks = (input: string) => {
 
     const commands = [...rawCommands.matchAll(/move (\d) from (\d) to (\d)/g)];
 
+    for (const [, n, a, z] of commands) {
+        const count = Number.parseInt(n);
+        const from = Number.parseInt(a) - 1;
+        const to = Number.parseInt(z) - 1;
+
+        for (let i = 0; i < count; i++) {
+            stacks[to].push(stacks[from].pop() || '')
+        }
+    }
+
     return "";
 };
