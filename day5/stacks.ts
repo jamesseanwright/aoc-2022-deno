@@ -9,10 +9,8 @@ export const arrangeStacks = (input: string) => {
 
     const stacks: string[][] = [];
 
-    console.log('*******', n)
-
     for (let i = 0; i < n; i++) {
-        for (let j = 0; j < rows.length - 1; j++) {
+        for (let j = rows.length - 1; j >= 0; j--) {
             if (!stacks[i]) {
                 stacks[i] = [];
             }
@@ -20,7 +18,7 @@ export const arrangeStacks = (input: string) => {
             const item = (rows[j].match(/\s{3}|\[[A-Z]\]/g) || [])[i];
 
             if (item && item.trim() !== '') {
-                stacks[i][j] = item;
+                stacks[i].push(item);
             }
         }
     }
