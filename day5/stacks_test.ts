@@ -7,13 +7,17 @@ const mainInput = Deno.readTextFileSync("./day5/main_input.txt");
 Deno.test("arrangeStacks() should arrange the stacks by interpreting the given instructions", () => {
   const exampleStacks = arrangeStacks(exampleInput);
 
-  assertEquals(exampleStacks[0].at(-1), "[C]")
-  assertEquals(exampleStacks[1].at(-1), "[M]")
-  assertEquals(exampleStacks[2].at(-1), "[Z]")
+  assertEquals(exampleStacks[0].at(-1), "[C]");
+  assertEquals(exampleStacks[1].at(-1), "[M]");
+  assertEquals(exampleStacks[2].at(-1), "[Z]");
 
   const mainStacks = arrangeStacks(mainInput);
 
-  for (const stack of mainStacks) {
-    assertEquals(stack.at(-1), "??");
-  }
+  assertEquals(
+    mainStacks.map((stack) => stack.at(-1))
+      .filter(Boolean)
+      .map((x) => x?.at(1))
+      .join(""),
+    "PSNRGBTFT",
+  );
 });
