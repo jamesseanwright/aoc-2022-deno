@@ -11,5 +11,5 @@ Deno.test("getFirstPacketIndex() should return the index where the first data pa
 
 Deno.test("getFirstMessageIndex() should return the index where the first full message package starts", () => {
   assertEquals(getFirstMessageIndex(exampleInput), 19);
-  assertEquals(getFirstMessageIndex(mainInput), -1);
+  assertEquals(getFirstMessageIndex(mainInput), 3298);
 });
