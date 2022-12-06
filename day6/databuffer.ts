@@ -19,3 +19,5 @@ export const getFirstPacketIndex = (input: string) => {
 
   return -1;
 };
+
+export const getFirstMessageIndex = (input: string) => 0;
