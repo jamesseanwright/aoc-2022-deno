@@ -1,17 +1,18 @@
 const PACKET_START_WINDOW = 4;
+const MESSAGE_START_WINDOW = 14;
 
-export const getFirstPacketIndex = (input: string) => {
+const getFirstMarkerIndex = (input: string, markerSize: number) => {
   for (let i = 0; i < input.length; i++) {
     let seen = "";
 
-    for (let j = i; j < i + PACKET_START_WINDOW; j++) {
+    for (let j = i; j < i + markerSize; j++) {
       if (seen.includes(input[j])) {
         break;
       }
 
       seen += input[j];
 
-      if (seen.length === PACKET_START_WINDOW) {
+      if (seen.length === markerSize) {
         return j + 1;
       }
     }
@@ -20,4 +21,8 @@ export const getFirstPacketIndex = (input: string) => {
   return -1;
 };
 
-export const getFirstMessageIndex = (input: string) => 0;
+export const getFirstPacketIndex = (input: string) =>
+  getFirstMarkerIndex(input, PACKET_START_WINDOW);
+
+export const getFirstMessageIndex = (input: string) =>
+  getFirstMarkerIndex(input, MESSAGE_START_WINDOW);
