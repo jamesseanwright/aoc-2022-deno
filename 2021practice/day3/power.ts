@@ -16,9 +16,7 @@ export const getPowerConsumption = (input: string) => {
       counts[value]++;
     }
 
-    gamma += counts["1"] > counts["0"]
-      ? "1"
-      : "0";
+    gamma += counts["1"] > counts["0"] ? "1" : "0";
   }
 
   const epsilon = flip(gamma);

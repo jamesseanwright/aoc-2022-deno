@@ -6,5 +6,5 @@ const mainInput = Deno.readTextFileSync("./day7/main_input.txt");
 
 Deno.test("sumSizeOfDirectoriesWithinSize() should return the total size of all the directories that are no greater than the specified size bound", () => {
   assertEquals(sumSizeOfDirectoriesWithinSize(exampleInput, 100000), 95437);
-  assertEquals(sumSizeOfDirectoriesWithinSize(mainInput, 100000), -1);
+  assertEquals(sumSizeOfDirectoriesWithinSize(mainInput, 100000), 1908462);
 });

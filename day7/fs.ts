@@ -51,12 +51,34 @@ const buildTree = (lines: string[]) => {
   }
 
   return dirStack[0];
-}
+};
 
-const reduceTree = (node: Node, size: number): number =>
-    node.type === "dir"
-      ? node.children.reduce((n, c) => n + reduceTree(c, size), 0)
-      : node.size <= size ? node.size : 0
+const reduceTree = (node: Node, maxDirSize: number): number => {
+  const withinSize: number[] = [];
 
-export const sumSizeOfDirectoriesWithinSize = (input: string, size: number) =>
-  reduceTree(buildTree(input.split("\n")), size);
+  const traverse = (child: Node): number => {
+    if (child.type === "dir") {
+      const dirSize = child.children.reduce((n, c) => {
+        const s = traverse(c);
+        return n + s;
+      }, 0);
+
+      withinSize.push(dirSize);
+
+      return dirSize;
+    }
+
+    return child.size;
+  };
+
+  traverse(node);
+
+  return withinSize
+    .filter((dirSize) => dirSize <= maxDirSize)
+    .reduce((n, dirSize) => n + dirSize, 0);
+};
+
+export const sumSizeOfDirectoriesWithinSize = (
+  input: string,
+  maxDirSize: number,
+) => reduceTree(buildTree(input.split("\n")), maxDirSize);
