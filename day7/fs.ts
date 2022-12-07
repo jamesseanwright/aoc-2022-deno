@@ -54,16 +54,13 @@ const buildTree = (lines: string[]) => {
 };
 
 const reduceTree = (node: Node, maxDirSize: number): number => {
-  const withinSize: number[] = [];
+  const sizes: number[] = [];
 
   const traverse = (child: Node): number => {
     if (child.type === "dir") {
-      const dirSize = child.children.reduce((n, c) => {
-        const s = traverse(c);
-        return n + s;
-      }, 0);
+      const dirSize = child.children.reduce((n, c) => n + traverse(c), 0);
 
-      withinSize.push(dirSize);
+      sizes.push(dirSize);
 
       return dirSize;
     }
@@ -73,7 +70,7 @@ const reduceTree = (node: Node, maxDirSize: number): number => {
 
   traverse(node);
 
-  return withinSize
+  return sizes
     .filter((dirSize) => dirSize <= maxDirSize)
     .reduce((n, dirSize) => n + dirSize, 0);
 };
