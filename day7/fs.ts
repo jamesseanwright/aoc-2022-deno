@@ -32,6 +32,24 @@ export const sumSizeOfDirectoriesWithinSize = (input: string, size: number) => {
 
   const buildTree = (lines: string[], dirs: Map<string, DirNode>, parent: Node, i = 0) => {
     const line = lines[i];
+    const asCommand = line.match(/^\$ ([a-z]{2})\s?(.*)$/);
+
+    if (asCommand) {
+      const [, command, arg] = asCommand;
+
+      switch (command) {
+        case 'cd':
+          if (arg === "..") {
+            buildTree(lines, dirs, parent, i + 1);
+          }
+
+          buildTree(lines, new Map(), dirs.get(arg) || parent, i + 1);
+          break;
+
+        case 'ls':
+          buildTree(lines, dirs, parent, i + 1);
+      }
+    }
 
     const asDir = line.match(/^dir ([a-z])$/);
 
@@ -51,25 +69,6 @@ export const sumSizeOfDirectoriesWithinSize = (input: string, size: number) => {
       const [, size, filename] = asFile;
       parent.children.push(createFileNode(filename, Number.parseInt(size)));
       buildTree(lines, dirs, parent, i + 1);
-    }
-
-    const asCommand = line.match(/^\$ ([a-z]{2})\s?(.*)$/);
-
-    if (asCommand) {
-      const [, command, arg] = asCommand;
-
-      switch (command) {
-        case 'cd':
-          if (arg === "..") {
-            return;
-          }
-
-          buildTree(lines, new Map(), dirs.get(arg) || parent, i + 1);
-          break;
-
-        case 'ls':
-          buildTree(lines, dirs, parent, i + 1);
-      }
     }
   };
 
