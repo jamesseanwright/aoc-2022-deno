@@ -28,35 +28,20 @@ const createDirNode = (dirname: string): DirNode => ({
 export const sumSizeOfDirectoriesWithinSize = (input: string, size: number) => {
   const lines = input.split("\n");
   const dirStack: DirNode[] = [];
-  let i = 0;
 
-  const buildTree = (lines: string[]) => {
+  for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const parent = dirStack.at(-1);
+    const [, command, arg] = line.match(/^\$ ([a-z]{2})\s?(.*)$/) || [];
 
-    i++;
+    if (command === "cd") {
+      if (arg === "..") {
+        dirStack.pop();
+      } else {
+        const dirNode = createDirNode(arg);
 
-    const asCommand = line.match(/^\$ ([a-z]{2})\s?(.*)$/);
-
-    if (asCommand) {
-      const [, command, arg] = asCommand;
-
-      switch (command) {
-        case 'cd': {
-          if (arg === "..") {
-            dirStack.pop();
-            return;
-          }
-
-          const dirNode = createDirNode(arg);
-
-          parent?.children.push(dirNode);
-          dirStack.push(dirNode);
-          buildTree(lines);
-          break;
-        }
-        case 'ls':
-          buildTree(lines);
+        parent?.children.push(dirNode);
+        dirStack.push(dirNode);
       }
     }
 
@@ -65,17 +50,10 @@ export const sumSizeOfDirectoriesWithinSize = (input: string, size: number) => {
     if (asFile && parent?.type === "dir") {
       const [, size, filename] = asFile;
       parent.children.push(createFileNode(filename, Number.parseInt(size)));
-      buildTree(lines);
     }
+  }
 
-    if (i === lines.length) {
-      return dirStack.pop();
-    }
-
-    buildTree(lines);
-  };
-
-  const tree = buildTree(lines);
+  const tree = dirStack[0];
 
   console.log('********', JSON.stringify(tree, null, 2));
 
