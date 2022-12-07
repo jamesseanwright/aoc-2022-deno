@@ -29,8 +29,7 @@ export const sumSizeOfDirectoriesWithinSize = (input: string, size: number) => {
   const lines = input.split("\n");
   const dirStack: DirNode[] = [];
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+  for (const line of lines) {
     const parent = dirStack.at(-1);
     const [, command, arg] = line.match(/^\$ ([a-z]{2})\s?(.*)$/) || [];
 
@@ -45,10 +44,9 @@ export const sumSizeOfDirectoriesWithinSize = (input: string, size: number) => {
       }
     }
 
-    const asFile = line.match(/(\d+) (.+)/);
+    const [, size, filename] = line.match(/(\d+) (.+)/) || [];
 
-    if (asFile && parent?.type === "dir") {
-      const [, size, filename] = asFile;
+    if (filename && parent?.type === "dir") {
       parent.children.push(createFileNode(filename, Number.parseInt(size)));
     }
   }
