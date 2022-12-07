@@ -26,41 +26,38 @@ const createDirNode = (dirname: string): DirNode => ({
 });
 
 export const sumSizeOfDirectoriesWithinSize = (input: string, size: number) => {
-  const lines = input
-    .split("\n")
-    .filter(Boolean); // for file line ending
+  const lines = input.split("\n");
+  const dirStack: DirNode[] = [];
+  let i = 0;
 
-  const buildTree = (lines: string[], dirs: Map<string, DirNode>, parent: Node, i = 0) => {
+  const buildTree = (lines: string[]) => {
     const line = lines[i];
+    const parent = dirStack.at(-1);
+
+    i++;
+
     const asCommand = line.match(/^\$ ([a-z]{2})\s?(.*)$/);
 
     if (asCommand) {
       const [, command, arg] = asCommand;
 
       switch (command) {
-        case 'cd':
+        case 'cd': {
           if (arg === "..") {
-            buildTree(lines, dirs, parent, i + 1);
+            dirStack.pop();
+            return;
           }
 
-          buildTree(lines, new Map(), dirs.get(arg) || parent, i + 1);
+          const dirNode = createDirNode(arg);
+
+          parent?.children.push(dirNode);
+          dirStack.push(dirNode);
+          buildTree(lines);
           break;
-
+        }
         case 'ls':
-          buildTree(lines, dirs, parent, i + 1);
+          buildTree(lines);
       }
-    }
-
-    const asDir = line.match(/^dir ([a-z])$/);
-
-    if (asDir && parent?.type === "dir") {
-      const [, dirname] = asDir;
-      const dirNode = createDirNode(dirname);
-
-      parent.children.push(dirNode);
-      dirs.set(dirname, dirNode);
-
-      buildTree(lines, dirs, parent, i + 1);
     }
 
     const asFile = line.match(/(\d+) (.+)/);
@@ -68,13 +65,17 @@ export const sumSizeOfDirectoriesWithinSize = (input: string, size: number) => {
     if (asFile && parent?.type === "dir") {
       const [, size, filename] = asFile;
       parent.children.push(createFileNode(filename, Number.parseInt(size)));
-      buildTree(lines, dirs, parent, i + 1);
+      buildTree(lines);
     }
+
+    if (i === lines.length) {
+      return dirStack.pop();
+    }
+
+    buildTree(lines);
   };
 
-  const tree = createDirNode("/");
-
-  buildTree(lines, new Map(), tree);
+  const tree = buildTree(lines);
 
   console.log('********', JSON.stringify(tree, null, 2));
 
