@@ -25,8 +25,7 @@ const createDirNode = (dirname: string): DirNode => ({
   children: [],
 });
 
-export const sumSizeOfDirectoriesWithinSize = (input: string, size: number) => {
-  const lines = input.split("\n");
+const buildTree = (lines: string[]) => {
   const dirStack: DirNode[] = [];
 
   for (const line of lines) {
@@ -51,9 +50,13 @@ export const sumSizeOfDirectoriesWithinSize = (input: string, size: number) => {
     }
   }
 
-  const tree = dirStack[0];
+  return dirStack[0];
+}
 
-  console.log('********', JSON.stringify(tree, null, 2));
+const reduceTree = (node: Node, size: number): number =>
+    node.type === "dir"
+      ? node.children.reduce((n, c) => n + reduceTree(c, size), 0)
+      : node.size <= size ? node.size : 0
 
-  return 0;
-};
+export const sumSizeOfDirectoriesWithinSize = (input: string, size: number) =>
+  reduceTree(buildTree(input.split("\n")), size);
