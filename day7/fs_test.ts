@@ -14,5 +14,5 @@ Deno.test("findDeletionCandidate() should return the size of the smallest direct
     findDeletionCandidate(exampleInput, 30000000, 70000000),
     24933642,
   );
-  assertEquals(findDeletionCandidate(mainInput, 30000000, 70000000), 0);
+  assertEquals(findDeletionCandidate(mainInput, 30000000, 70000000), 3979145);
 });
