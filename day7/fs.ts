@@ -77,21 +77,22 @@ const getDirSizes = (node: Node) => {
 export const sumSizeOfDirectoriesWithinSize = (
   input: string,
   maxDirSize: number,
-) => getDirSizes(buildTree(input))
-  .filter((dirSize) => dirSize <= maxDirSize)
-  .reduce((n, dirSize) => n + dirSize, 0);
+) =>
+  getDirSizes(buildTree(input))
+    .filter((dirSize) => dirSize <= maxDirSize)
+    .reduce((n, dirSize) => n + dirSize, 0);
 
 export const findDeletionCandidate = (
   input: string,
   totalRequiredFreeSpace: number,
   diskSize: number,
 ) => {
-  const sizes = getDirSizes(buildTree(input));
+  const sizes = getDirSizes(buildTree(input)).toSorted((a, b) => a - b);
   const usedSpace = sizes.at(-1) || 0;
   const unusedSpace = diskSize - usedSpace;
   const requiredSpace = totalRequiredFreeSpace - unusedSpace;
 
-  return sizes.find(size => {
+  return sizes.find((size) => {
     return size > requiredSpace;
   });
 };
