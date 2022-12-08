@@ -79,3 +79,9 @@ export const sumSizeOfDirectoriesWithinSize = (
   input: string,
   maxDirSize: number,
 ) => reduceTree(buildTree(input.split("\n")), maxDirSize);
+
+export const findDeletionCandidate = (
+  input: string,
+  requiredFreeSpace: number,
+  diskSize: number,
+) => 0;
