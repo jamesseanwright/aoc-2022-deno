@@ -25,7 +25,8 @@ const createDirNode = (dirname: string): DirNode => ({
   children: [],
 });
 
-const buildTree = (lines: string[]) => {
+const buildTree = (input: string) => {
+  const lines = input.split("\n");
   const dirStack: DirNode[] = [];
 
   for (const line of lines) {
@@ -53,7 +54,7 @@ const buildTree = (lines: string[]) => {
   return dirStack[0];
 };
 
-const reduceTree = (node: Node, maxDirSize: number): number => {
+const getDirSizes = (node: Node) => {
   const sizes: number[] = [];
 
   const traverse = (child: Node): number => {
@@ -70,18 +71,27 @@ const reduceTree = (node: Node, maxDirSize: number): number => {
 
   traverse(node);
 
-  return sizes
-    .filter((dirSize) => dirSize <= maxDirSize)
-    .reduce((n, dirSize) => n + dirSize, 0);
+  return sizes;
 };
 
 export const sumSizeOfDirectoriesWithinSize = (
   input: string,
   maxDirSize: number,
-) => reduceTree(buildTree(input.split("\n")), maxDirSize);
+) => getDirSizes(buildTree(input))
+  .filter((dirSize) => dirSize <= maxDirSize)
+  .reduce((n, dirSize) => n + dirSize, 0);
 
 export const findDeletionCandidate = (
   input: string,
-  requiredFreeSpace: number,
+  totalRequiredFreeSpace: number,
   diskSize: number,
-) => 0;
+) => {
+  const sizes = getDirSizes(buildTree(input));
+  const usedSpace = sizes.at(-1) || 0;
+  const unusedSpace = diskSize - usedSpace;
+  const requiredSpace = totalRequiredFreeSpace - unusedSpace;
+
+  return sizes.find(size => {
+    return size > requiredSpace;
+  });
+};
