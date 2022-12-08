@@ -92,7 +92,5 @@ export const findDeletionCandidate = (
   const unusedSpace = diskSize - usedSpace;
   const requiredSpace = totalRequiredFreeSpace - unusedSpace;
 
-  return sizes.find((size) => {
-    return size > requiredSpace;
-  });
+  return sizes.find((size) => size > requiredSpace);
 };
