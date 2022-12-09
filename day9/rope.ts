@@ -38,7 +38,7 @@ export const getTailVisitCount = (input: string) =>
       const distance = getEuclidianDistance(tailPos, newHeadPos);
       let newTailPos = move(tailPos, getVelocity(direction, distance - 1));
 
-      if (Number.parseInt(steps) > 1 && areDiagonal(newHeadPos, newTailPos)) {
+      if (distance > 1 && areDiagonal(newHeadPos, newTailPos)) {
         newTailPos = move(newTailPos, rotate(getVelocity(direction, 1)))
       }
 
