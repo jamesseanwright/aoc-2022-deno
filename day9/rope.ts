@@ -38,7 +38,7 @@ const areEqual = ([aX, aY]: Point2D, [bX, bY]: Point2D) => aX == bX && aY == bY;
 const hasBeenVisited = (visited: Point2D[], [x, y]: Point2D) =>
   visited.some(([visitedX, visitedY]) => visitedX === x && visitedY === y);
 
-export const getTailVisitCount = (input: string) =>
+export const getTailVisitCount = (input: string, length = 1) =>
   input.split("\n")
     .filter(Boolean) // trims file line ending
     .map((move) => move.split(" "))
