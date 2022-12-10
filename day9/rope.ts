@@ -1,22 +1,23 @@
 type Point2D = [number, number];
 
+const range = (length: number) => Array.from({ length });
+
 const getVelocity = (direction: string): Point2D => {
   switch (direction) {
-    case 'R':
+    case "R":
       return [1, 0];
-    case 'L':
+    case "L":
       return [-1, 0];
-    case 'U':
+    case "U":
       return [0, -1];
-    case 'D':
+    case "D":
       return [0, 1];
   }
 
   return [0, 0];
-}
+};
 
-const mult = (p: Point2D, x: number): Point2D =>
-  p.map(a => a * x) as Point2D;
+const mult = (p: Point2D, x: number): Point2D => p.map((a) => a * x) as Point2D;
 
 const move = (pos: Point2D, steps: Point2D): Point2D =>
   pos.map((a, i) => a + steps[i]) as Point2D;
@@ -28,10 +29,11 @@ const getEuclidianDistance = (a: Point2D, b: Point2D) => {
 };
 
 const areDiagonal = (a: Point2D, b: Point2D) =>
-  [a, b].reduce(([prevX, prevY], [x, y]) => [prevX - x, prevY - y]).every(a => a !== 0);
+  [a, b].reduce(([prevX, prevY], [x, y]) => [prevX - x, prevY - y]).every((a) =>
+    a !== 0
+  );
 
-const areEqual = ([aX, aY]: Point2D, [bX, bY]: Point2D) =>
-  aX == bX && aY == bY;
+const areEqual = ([aX, aY]: Point2D, [bX, bY]: Point2D) => aX == bX && aY == bY;
 
 const hasBeenVisited = (visited: Point2D[], [x, y]: Point2D) =>
   visited.some(([visitedX, visitedY]) => visitedX === x && visitedY === y);
@@ -39,34 +41,48 @@ const hasBeenVisited = (visited: Point2D[], [x, y]: Point2D) =>
 export const getTailVisitCount = (input: string) =>
   input.split("\n")
     .filter(Boolean) // trims file line ending
-    .map(move => move.split(" "))
-    .reduce<[number, Point2D, Point2D, Point2D[]]>(([total, headPos, tailPos, visited], [direction, steps]) => {
-      const path = Array.from({ length: Number.parseInt(steps) }).reduce<[Point2D, Point2D, Point2D?][]>((acc, _, __, { length }) => {
-        const [prevHead, prevTail] = acc[0];
-        const newHeadPos = move(prevHead, getVelocity(direction));
+    .map((move) => move.split(" "))
+    .reduce<[number, Point2D, Point2D, Point2D[]]>(
+      ([total, headPos, tailPos, visited], [direction, steps]) => {
+        const path = range(Number.parseInt(steps)).reduce<
+          [Point2D, Point2D, Point2D?][]
+        >((acc) => {
+          const [prevHead, prevTail] = acc[0];
+          const newHeadPos = move(prevHead, getVelocity(direction));
 
-        let newTailPos = prevTail;
+          let newTailPos = prevTail;
 
-        if (getEuclidianDistance(newHeadPos, newTailPos) > 1) {
-          newTailPos = move(newTailPos, getVelocity(direction));
+          if (getEuclidianDistance(newHeadPos, newTailPos) > 1) {
+            newTailPos = move(newTailPos, getVelocity(direction));
 
-          if (areDiagonal(newHeadPos, newTailPos)) {
-            newTailPos = move(newHeadPos, mult(getVelocity(direction), -1));
+            if (areDiagonal(newHeadPos, newTailPos)) {
+              newTailPos = move(newHeadPos, mult(getVelocity(direction), -1));
+            }
           }
-        }
 
-        return [
-          [newHeadPos, newTailPos, areEqual(prevTail, newTailPos) ? undefined : newTailPos],
-          ...acc,
-        ];
-      }, [[headPos, tailPos, tailPos]]);
+          return [
+            [
+              newHeadPos,
+              newTailPos,
+              areEqual(prevTail, newTailPos) ? undefined : newTailPos,
+            ],
+            ...acc,
+          ];
+        }, [[headPos, tailPos, tailPos]]);
 
-      const [newHeadPos, newTailPos] = path[0];
+        const [newHeadPos, newTailPos] = path[0];
 
-      const unvisitedTailNodes = path
-        .map(([, , uniqueTail]) => uniqueTail)
-        .filter(p => p !== undefined && !hasBeenVisited(visited, p)) as Point2D[];
+        const unvisitedTailNodes = path
+          .map(([, , uniqueTail]) => uniqueTail)
+          .filter((p) =>
+            p !== undefined && !hasBeenVisited(visited, p)
+          ) as Point2D[];
 
-      return [total + unvisitedTailNodes.length, newHeadPos, newTailPos, [...visited, ...unvisitedTailNodes]];
-    }, [0, [0, 0], [0, 0], []])
+        return [total + unvisitedTailNodes.length, newHeadPos, newTailPos, [
+          ...visited,
+          ...unvisitedTailNodes,
+        ]];
+      },
+      [0, [0, 0], [0, 0], []],
+    )
     .at(0);
