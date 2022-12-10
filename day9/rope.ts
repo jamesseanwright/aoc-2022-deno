@@ -15,7 +15,8 @@ const getVelocity = (direction: string): Point2D => {
   return [0, 0];
 }
 
-const rotate = ([x, y]: Point2D): Point2D => [y * -1, x];
+const mult = (p: Point2D, x: number): Point2D =>
+  p.map(a => a * x) as Point2D;
 
 const move = (pos: Point2D, steps: Point2D): Point2D =>
   pos.map((a, i) => a + steps[i]) as Point2D;
@@ -50,7 +51,7 @@ export const getTailVisitCount = (input: string) =>
           newTailPos = move(newTailPos, getVelocity(direction));
 
           if (areDiagonal(newHeadPos, newTailPos)) {
-            newTailPos = move(newTailPos, rotate(getVelocity(direction)));
+            newTailPos = move(newHeadPos, mult(getVelocity(direction), -1));
           }
         }
 
