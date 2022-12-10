@@ -29,6 +29,9 @@ const getEuclidianDistance = (a: Point2D, b: Point2D) => {
 const areDiagonal = (a: Point2D, b: Point2D) =>
   [a, b].reduce(([prevX, prevY], [x, y]) => [prevX - x, prevY - y]).every(a => a !== 0);
 
+const areEqual = ([aX, aY]: Point2D, [bX, bY]: Point2D) =>
+  aX == bX && aY == bY;
+
 const hasBeenVisited = (visited: Point2D[], [x, y]: Point2D) =>
   visited.some(([visitedX, visitedY]) => visitedX === x && visitedY === y);
 
@@ -37,7 +40,7 @@ export const getTailVisitCount = (input: string) =>
     .filter(Boolean) // trims file line ending
     .map(move => move.split(" "))
     .reduce<[number, Point2D, Point2D, Point2D[]]>(([total, headPos, tailPos, visited], [direction, steps]) => {
-      const path = Array.from({ length: Number.parseInt(steps) }).reduce<[Point2D, Point2D][]>((acc, _, i) => {
+      const path = Array.from({ length: Number.parseInt(steps) }).reduce<[Point2D, Point2D, Point2D?][]>((acc, _, __, { length }) => {
         const [prevHead, prevTail] = acc[0];
         const newHeadPos = move(prevHead, getVelocity(direction));
 
@@ -52,16 +55,16 @@ export const getTailVisitCount = (input: string) =>
         }
 
         return [
-          [newHeadPos, newTailPos],
+          [newHeadPos, newTailPos, areEqual(prevTail, newTailPos) ? undefined : newTailPos],
           ...acc,
         ];
-      }, [[headPos, tailPos]]);
+      }, [[headPos, tailPos, tailPos]]);
 
       const [newHeadPos, newTailPos] = path[0];
 
       const unvisitedTailNodes = path
-        .map(([, tail]) => tail)
-        .filter(p => !hasBeenVisited(visited, p));
+        .map(([, , uniqueTail]) => uniqueTail)
+        .filter(p => p !== undefined && !hasBeenVisited(visited, p)) as Point2D[];
 
       return [total + unvisitedTailNodes.length, newHeadPos, newTailPos, [...visited, ...unvisitedTailNodes]];
     }, [0, [0, 0], [0, 0], []])
