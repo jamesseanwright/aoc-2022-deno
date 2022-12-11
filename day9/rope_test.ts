@@ -6,7 +6,7 @@ const secondExampleInput = Deno.readTextFileSync("./day9/example_input_2.txt");
 const mainInput = Deno.readTextFileSync("./day9/main_input.txt");
 
 Deno.test("getTailVisitCount() should calculate the number of positions the tail visits from the provided head motions", () => {
-  // assertEquals(getTailVisitCount(exampleInput), 13);
+  assertEquals(getTailVisitCount(exampleInput), 13);
   // assertEquals(getTailVisitCount(mainInput), 6271);
 });
 
