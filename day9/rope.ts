@@ -55,7 +55,11 @@ const mult = (p: Point2D, x: number): Point2D => p.map((a) => a * x) as Point2D;
 const move = (pos: Point2D, steps: Point2D): Point2D =>
   pos.map((a, i) => a + steps[i]) as Point2D;
 
-const rotate = ([x, y]: Point2D): Point2D => [y * -1, x];
+const rotate = ([prevX, prevY]: Point2D, [x, y]: Point2D, velocity: Point2D): Point2D =>
+  x > prevX && y < prevY ? rotateLeft(velocity) : rotateRight(velocity)
+
+const rotateRight = ([x, y]: Point2D): Point2D => [y * -1, x];
+const rotateLeft = ([x, y]: Point2D): Point2D => [y, x * -1];
 
 const getEuclidianDistance = (a: Point2D, b: Point2D) => {
   const displacement = b.map((p, i) => p - a[i]);
@@ -101,15 +105,17 @@ export const getTailVisitCount = (input: string, length = 1) => {
             return;
           }
 
-          if (getEuclidianDistance(node.previous.value, node.value) > 1) {
-            node.value = move(node.value, getVelocity(direction))
+          console.log('BEFORE', direction, i, ": ", printLinkedList(rope));
 
+          if (getEuclidianDistance(node.previous.value, node.value) > 1) {
             if (areDiagonal(node.previous.value, node.value)) {
-              node.value = move(node.previous.value, mult(getVelocity(direction), -1));
-            } else if (getEuclidianDistance(node.previous.value, node.value) > 1) {
-              node.value = move(node.value, rotate(getVelocity(direction)));
+              node.value = move(node.value, rotate(node.previous.value, node.value, getVelocity(direction)));
             }
+
+            node.value = move(node.value, getVelocity(direction))
           }
+
+          console.log('AFTER ', direction, i, ": ", printLinkedList(rope));
 
           if (!node.next) { // return new tail visited position
             return node.value;
