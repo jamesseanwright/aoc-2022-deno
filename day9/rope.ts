@@ -18,9 +18,12 @@ const createLinkedList = <T>(length: number, item: T) => {
     node.next.previous = node;
     return [head, node.next];
   }, [head, head])[0];
-}
+};
 
-const walkLinkedList = <T>(head: Node<T>, fn: (next: Node<T>) => (T | undefined)) => {
+const walkLinkedList = <T>(
+  head: Node<T>,
+  fn: (next: Node<T>) => T | undefined,
+) => {
   const res: (T | undefined)[] = [];
   let node: Node<T> | undefined = head;
 
@@ -56,82 +59,46 @@ const move = (pos: Point2D, velocity: Point2D): Point2D =>
 const sub = (pos: Point2D, velocity: Point2D): Point2D =>
   pos.map((a, i) => a - velocity[i]) as Point2D;
 
-const moveOrthogonally = (current: Point2D, prev: Point2D, [vx, vy]: Point2D): Point2D => {
-  const orthogonal = [Math.abs(vy), Math.abs(vx)];
-  return move(current, current.map((a, i) => {
-    return Math.max(Math.min(prev[i] - a, 1) , -1) * orthogonal[i];
-  }) as Point2D);
-};
-
-const isAxisSame = (current: Point2D, prev: Point2D, [vx, vy]: Point2D) => {
-  const axis = [Math.abs(vx), Math.abs(vy)];
-
-  return current.reduce((n, a, i) => {
-    return n + (a - prev[i]) * axis[i];
-  }, 0) === 0;
-};
-
 const getEuclidianDistance = (a: Point2D, b: Point2D) => {
   const displacement = b.map((p, i) => p - a[i]);
 
   return Math.floor(Math.sqrt(displacement.reduce((dis, p) => dis + p * p, 0)));
 };
 
-const areDiagonal = (a: Point2D, b: Point2D) =>
-  [a, b].reduce(([prevX, prevY], [x, y]) => [prevX - x, prevY - y]).every((a) =>
-    a !== 0
-  );
-
-const printLinkedList = <T>(list: Node<T>) => {
-    let node: Node<T> | undefined = list;
-    let res = "";
-
-    while (node) {
-      res += node.value;
-
-      if (node.next) {
-        res += " => "
-      }
-
-      node = node.next;
-    }
-
-    return res;
-  };
-
 export const getTailVisitCount = (input: string, length = 2) => {
   const rope = createLinkedList<Point2D>(length - 1, [0, 0]);
   const visitedTailPositions = new Set<string>();
 
-  const path =  input.split("\n")
+  const path = input.split("\n")
     .filter(Boolean) // trims file line ending
     .map((move) => move.split(" "));
 
   const pathTailPositions = path.flatMap(([direction, steps]) =>
-    range<Node<Point2D> | undefined>(Number.parseInt(steps)).flatMap((_, i) =>
-        walkLinkedList(rope, node => {
-          if (!node.previous) {
-            node.value = move(node.value, getVelocity(direction));
-            return;
-          }
+    range<Node<Point2D> | undefined>(Number.parseInt(steps)).flatMap(() =>
+      walkLinkedList(rope, (node) => {
+        if (!node.previous) {
+          node.value = move(node.value, getVelocity(direction));
+          return;
+        }
 
-          if (getEuclidianDistance(node.previous.value, node.value) > 1) {
-            const nodeDir = sub(node.previous.value, node.value)
-              .map(a => Math.max(Math.min(a, 1) , -1)) as Point2D;
+        if (getEuclidianDistance(node.previous.value, node.value) > 1) {
+          const nodeDir = sub(node.previous.value, node.value)
+            .map((a) => Math.max(Math.min(a, 1), -1)) as Point2D;
 
-            node.value = move(node.value, nodeDir);
-          }
+          node.value = move(node.value, nodeDir);
+        }
 
-          if (!node.next) { // return new tail visited position
-            return node.value;
-          }
-        })));
+        if (!node.next) { // return new tail visited position
+          return node.value;
+        }
+      })
+    )
+  );
 
   pathTailPositions
     .filter(Boolean)
     .map(([x, y] = [0, 0]) => `${x}-${y}`)
-    .forEach(hash => visitedTailPositions.add(hash));
+    .forEach((hash) => visitedTailPositions.add(hash));
 
   return visitedTailPositions.size;
 };
-
