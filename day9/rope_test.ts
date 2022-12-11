@@ -7,11 +7,11 @@ const mainInput = Deno.readTextFileSync("./day9/main_input.txt");
 
 Deno.test("getTailVisitCount() should calculate the number of positions the tail visits from the provided head motions", () => {
   assertEquals(getTailVisitCount(exampleInput), 13);
-  // assertEquals(getTailVisitCount(mainInput), 6271);
+  assertEquals(getTailVisitCount(mainInput), 6271);
 });
 
 Deno.test("getTailVisitCount() should calculate the number of positions the tail visits for a custom rope length", () => {
   assertEquals(getTailVisitCount(exampleInput, 10), 1);
-  // assertEquals(getTailVisitCount(secondExampleInput, 10), 36);
+  assertEquals(getTailVisitCount(secondExampleInput, 10), 36);
   // assertEquals(getTailVisitCount(mainInput, 10), -1);
 });
