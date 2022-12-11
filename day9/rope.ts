@@ -1,6 +1,39 @@
-type Point2D = [number, number];
+const range = <T>(length: number) => Array.from<T>({ length });
 
-const range = (length: number) => Array.from({ length });
+interface Node<T> {
+  value: T;
+  previous?: Node<T>;
+  next?: Node<T>;
+}
+
+const createNode = <T>(value: T): Node<T> => ({
+  value,
+});
+
+const createLinkedList = <T>(length: number, item: T) => {
+  const head = createNode(item);
+
+  return range<T>(length).reduce(([head, node]) => {
+    node.next = createNode(item);
+    node.next.previous = node;
+    return [head, node.next];
+  }, [head, head])[0];
+}
+
+const walkLinkedList = <T>(head: Node<T>, fn: (next: Node<T>) => (T | undefined)) => {
+  const res: (T | undefined)[] = [];
+  let node: Node<T> | undefined = head;
+
+  while (node) {
+    res.push(fn(node));
+
+    node = node.next;
+  }
+
+  return res;
+};
+
+type Point2D = [number, number];
 
 const getVelocity = (direction: string): Point2D => {
   switch (direction) {
@@ -33,68 +66,41 @@ const areDiagonal = (a: Point2D, b: Point2D) =>
     a !== 0
   );
 
-const areEqual = ([aX, aY]: Point2D, [bX, bY]: Point2D) => aX == bX && aY == bY;
+export const getTailVisitCount = (input: string, length = 1) => {
+  const rope = createLinkedList<Point2D>(length, [0, 0]);
 
-const hasBeenVisited = (visited: Point2D[], [x, y]: Point2D) =>
-  visited.some(([visitedX, visitedY]) => visitedX === x && visitedY === y);
-
-const createRope = (length: number) =>
-  Array.from<Point2D>({ length }).fill([0, 0]);
-
-export const getTailVisitCount = (input: string, length = 1) =>
-  input.split("\n")
+  const path =  input.split("\n")
     .filter(Boolean) // trims file line ending
-    .map((move) => move.split(" "))
-    .reduce<[number, Point2D[], Point2D[]]>(
-      ([total, prevRope, visited], [direction, steps]) => {
-        const path = range(Number.parseInt(steps)).reduce<
-          [Point2D[], Point2D?][]
-        >((acc) => {
-          const nextRope = prevRope.reduce<[Point2D[], Point2D[]]>(([next, visited], p, i) => {
-            if (i === 0) {
-              return [
-                [
-                  ...next,
-                  move(p, getVelocity(direction)),
-                ],
-                visited,
-              ]
+    .map((move) => move.split(" "));
+
+  const visitedTailPositions = new Set<string>();
+
+  const pathTailPositions = path.flatMap(([direction, steps]) =>
+    range<Node<Point2D> | undefined>(Number.parseInt(steps)).flatMap(() =>
+        walkLinkedList(rope, node => {
+          if (!node.previous) {
+            node.value = move(node.value, getVelocity(direction));
+            return;
+          }
+
+          if (getEuclidianDistance(node.previous.value, node.value) > 1) {
+            node.value = move(node.value, getVelocity(direction))
+
+            if (areDiagonal(node.previous.value, node.value)) {
+              node.value = move(node.value, mult(getVelocity(direction), -1));
             }
+          }
 
-            const parent = next[i - 1]
-            let newTailPos = p;
+          if (!node.next) { // return new tail visited position
+            return node.value;
+          }
+        })));
 
-            if (getEuclidianDistance(parent, newTailPos) > 1) {
-              newTailPos = move(newTailPos, getVelocity(direction));
+  pathTailPositions
+    .filter(Boolean)
+    .map(([x, y] = [0, 0]) => `${x}${y}`)
+    .forEach(hash => visitedTailPositions.add(hash));
 
-              if (areDiagonal(parent, newTailPos)) {
-                newTailPos = move(parent, mult(getVelocity(direction), -1));
-              }
-            }
+  return visitedTailPositions.size;
+};
 
-            return [
-              [
-                ...next,
-                newTailPos,
-              ],
-              areEqual(p, newTailPos) ? undefined : newTailPos
-            ]
-          }, []);
-
-          return nextRope;
-        }, []);
-
-        const unvisitedTailNodes = path
-          .map(([, , uniqueTail]) => uniqueTail)
-          .filter((p) =>
-            p !== undefined && !hasBeenVisited(visited, p)
-          ) as Point2D[];
-
-        return [total + unvisitedTailNodes.length, nextRope, [
-          ...visited,
-          ...unvisitedTailNodes,
-        ]];
-      },
-      [0, createRope(length), []],
-    )
-    .at(0);
