@@ -55,7 +55,17 @@ const move = (pos: Point2D, velocity: Point2D): Point2D =>
 
 const moveOrthogonally = (current: Point2D, prev: Point2D, [vx, vy]: Point2D): Point2D => {
   const orthogonal = [Math.abs(vy), Math.abs(vx)];
-  return move(current, current.map((a, i) => Math.max(Math.min(prev[i] - a, 1) , -1) * orthogonal[i]) as Point2D);
+  return move(current, current.map((a, i) => {
+    return Math.max(Math.min(prev[i] - a, 1) , -1) * orthogonal[i];
+  }) as Point2D);
+};
+
+const isAxisSame = (current: Point2D, prev: Point2D, [vx, vy]: Point2D) => {
+  const axis = [Math.abs(vx), Math.abs(vy)];
+
+  return current.reduce((n, a, i) => {
+    return n + (a - prev[i]) * axis[i];
+  }, 0) === 0;
 };
 
 const getEuclidianDistance = (a: Point2D, b: Point2D) => {
@@ -105,7 +115,7 @@ export const getTailVisitCount = (input: string, length = 2) => {
           console.log('BEFORE', direction, i, ": ", printLinkedList(rope));
 
           if (getEuclidianDistance(node.previous.value, node.value) > 1) {
-            if (areDiagonal(node.previous.value, node.value)) {
+            if (areDiagonal(node.previous.value, node.value) || isAxisSame(node.previous.value, node.value, getVelocity(direction))) {
               node.value = moveOrthogonally(node.value, node.previous.value, getVelocity(direction));
             }
 
