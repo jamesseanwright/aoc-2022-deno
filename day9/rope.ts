@@ -68,12 +68,11 @@ const areDiagonal = (a: Point2D, b: Point2D) =>
 
 export const getTailVisitCount = (input: string, length = 1) => {
   const rope = createLinkedList<Point2D>(length, [0, 0]);
+  const visitedTailPositions = new Set<string>();
 
   const path =  input.split("\n")
     .filter(Boolean) // trims file line ending
     .map((move) => move.split(" "));
-
-  const visitedTailPositions = new Set<string>();
 
   const pathTailPositions = path.flatMap(([direction, steps]) =>
     range<Node<Point2D> | undefined>(Number.parseInt(steps)).flatMap(() =>
@@ -87,7 +86,7 @@ export const getTailVisitCount = (input: string, length = 1) => {
             node.value = move(node.value, getVelocity(direction))
 
             if (areDiagonal(node.previous.value, node.value)) {
-              node.value = move(node.value, mult(getVelocity(direction), -1));
+              node.value = move(node.previous.value, mult(getVelocity(direction), -1));
             }
           }
 
@@ -98,7 +97,7 @@ export const getTailVisitCount = (input: string, length = 1) => {
 
   pathTailPositions
     .filter(Boolean)
-    .map(([x, y] = [0, 0]) => `${x}${y}`)
+    .map(([x, y] = [0, 0]) => `${x}-${y}`)
     .forEach(hash => visitedTailPositions.add(hash));
 
   return visitedTailPositions.size;
