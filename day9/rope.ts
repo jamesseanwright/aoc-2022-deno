@@ -53,6 +53,9 @@ const getVelocity = (direction: string): Point2D => {
 const move = (pos: Point2D, velocity: Point2D): Point2D =>
   pos.map((a, i) => a + velocity[i]) as Point2D;
 
+const sub = (pos: Point2D, velocity: Point2D): Point2D =>
+  pos.map((a, i) => a - velocity[i]) as Point2D;
+
 const moveOrthogonally = (current: Point2D, prev: Point2D, [vx, vy]: Point2D): Point2D => {
   const orthogonal = [Math.abs(vy), Math.abs(vx)];
   return move(current, current.map((a, i) => {
@@ -112,17 +115,12 @@ export const getTailVisitCount = (input: string, length = 2) => {
             return;
           }
 
-          console.log('BEFORE', direction, i, ": ", printLinkedList(rope));
-
           if (getEuclidianDistance(node.previous.value, node.value) > 1) {
-            if (areDiagonal(node.previous.value, node.value) || isAxisSame(node.previous.value, node.value, getVelocity(direction))) {
-              node.value = moveOrthogonally(node.value, node.previous.value, getVelocity(direction));
-            }
+            const nodeDir = sub(node.previous.value, node.value)
+              .map(a => Math.max(Math.min(a, 1) , -1)) as Point2D;
 
-            node.value = move(node.value, getVelocity(direction))
+            node.value = move(node.value, nodeDir);
           }
-
-          console.log('AFTER ', direction, i, ": ", printLinkedList(rope));
 
           if (!node.next) { // return new tail visited position
             return node.value;
