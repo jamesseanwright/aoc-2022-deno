@@ -86,8 +86,8 @@ const printLinkedList = <T>(list: Node<T>) => {
     return res;
   };
 
-export const getTailVisitCount = (input: string, length = 1) => {
-  const rope = createLinkedList<Point2D>(length, [0, 0]);
+export const getTailVisitCount = (input: string, length = 2) => {
+  const rope = createLinkedList<Point2D>(length - 1, [0, 0]);
   const visitedTailPositions = new Set<string>();
 
   const path =  input.split("\n")
