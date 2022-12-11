@@ -55,6 +55,8 @@ const mult = (p: Point2D, x: number): Point2D => p.map((a) => a * x) as Point2D;
 const move = (pos: Point2D, steps: Point2D): Point2D =>
   pos.map((a, i) => a + steps[i]) as Point2D;
 
+const rotate = ([x, y]: Point2D): Point2D => [y * -1, x];
+
 const getEuclidianDistance = (a: Point2D, b: Point2D) => {
   const displacement = b.map((p, i) => p - a[i]);
 
@@ -66,6 +68,23 @@ const areDiagonal = (a: Point2D, b: Point2D) =>
     a !== 0
   );
 
+const printLinkedList = <T>(list: Node<T>) => {
+    let node: Node<T> | undefined = list;
+    let res = "";
+
+    while (node) {
+      res += node.value;
+
+      if (node.next) {
+        res += " => "
+      }
+
+      node = node.next;
+    }
+
+    return res;
+  };
+
 export const getTailVisitCount = (input: string, length = 1) => {
   const rope = createLinkedList<Point2D>(length, [0, 0]);
   const visitedTailPositions = new Set<string>();
@@ -75,7 +94,7 @@ export const getTailVisitCount = (input: string, length = 1) => {
     .map((move) => move.split(" "));
 
   const pathTailPositions = path.flatMap(([direction, steps]) =>
-    range<Node<Point2D> | undefined>(Number.parseInt(steps)).flatMap(() =>
+    range<Node<Point2D> | undefined>(Number.parseInt(steps)).flatMap((_, i) =>
         walkLinkedList(rope, node => {
           if (!node.previous) {
             node.value = move(node.value, getVelocity(direction));
@@ -87,6 +106,8 @@ export const getTailVisitCount = (input: string, length = 1) => {
 
             if (areDiagonal(node.previous.value, node.value)) {
               node.value = move(node.previous.value, mult(getVelocity(direction), -1));
+            } else if (getEuclidianDistance(node.previous.value, node.value) > 1) {
+              node.value = move(node.value, rotate(getVelocity(direction)));
             }
           }
 
