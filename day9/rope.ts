@@ -29,7 +29,6 @@ const walkLinkedList = <T>(
 
   while (node) {
     res.push(fn(node));
-
     node = node.next;
   }
 
@@ -64,7 +63,6 @@ const clamp = (p: Point2D): Point2D =>
 
 const getEuclidianDistance = (a: Point2D, b: Point2D) => {
   const displacement = b.map((p, i) => p - a[i]);
-
   return Math.floor(Math.sqrt(displacement.reduce((dis, p) => dis + p * p, 0)));
 };
 
