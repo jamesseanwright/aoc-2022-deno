@@ -56,8 +56,11 @@ const getVelocity = (direction: string): Point2D => {
 const move = (pos: Point2D, velocity: Point2D): Point2D =>
   pos.map((a, i) => a + velocity[i]) as Point2D;
 
-const sub = (pos: Point2D, velocity: Point2D): Point2D =>
-  pos.map((a, i) => a - velocity[i]) as Point2D;
+const sub = (x: Point2D, y: Point2D): Point2D =>
+  x.map((a, i) => a - y[i]) as Point2D;
+
+const clamp = (p: Point2D): Point2D =>
+  p.map((a) => Math.max(Math.min(a, 1), -1)) as Point2D;
 
 const getEuclidianDistance = (a: Point2D, b: Point2D) => {
   const displacement = b.map((p, i) => p - a[i]);
@@ -82,9 +85,7 @@ export const getTailVisitCount = (input: string, length = 2) => {
         }
 
         if (getEuclidianDistance(node.previous.value, node.value) > 1) {
-          const nodeDir = sub(node.previous.value, node.value)
-            .map((a) => Math.max(Math.min(a, 1), -1)) as Point2D;
-
+          const nodeDir = clamp(sub(node.previous.value, node.value));
           node.value = move(node.value, nodeDir);
         }
 
