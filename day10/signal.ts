@@ -47,7 +47,8 @@ export const run = (input: string) => {
 
   for (let cycle = 1; cycle <= CRT_SIZE; cycle++) {
     const pixel = cycle - 1;
-    screen[pixel] = (pixel % SIGNAL_CYCLE_INTERVAL) >= x - 1 && (pixel % SIGNAL_CYCLE_INTERVAL) <= x + 1;
+    screen[pixel] = (pixel % SIGNAL_CYCLE_INTERVAL) >= x - 1 &&
+      (pixel % SIGNAL_CYCLE_INTERVAL) <= x + 1;
 
     if (stack.length > 0) {
       const [instruction, arg] = stack.pop()!;
@@ -65,7 +66,9 @@ export const run = (input: string) => {
   }
 
   return screen.reduce(
-    (out, pixel, i) => out + (pixel ? "#" : ".") + ((i + 1) % SIGNAL_CYCLE_INTERVAL === 0 ? "\n" : ""),
+    (out, pixel, i) =>
+      out + (pixel ? "#" : ".") +
+      ((i + 1) % SIGNAL_CYCLE_INTERVAL === 0 ? "\n" : ""),
     "",
   );
 };
