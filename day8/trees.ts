@@ -1,5 +1,37 @@
 type Result = [number, number, boolean, number, number, number, number];
 
+const scan = (i: number, n: number, predicate: (a: number) => boolean): [number, boolean] => {
+  let score = 0;
+  let visibleFromEdge = true;
+
+  for (let a = i + 1; a < n; a++) {
+    score++;
+
+    if (predicate(a)) {
+      visibleFromEdge = false;
+      break;
+    }
+  }
+
+  return [score, visibleFromEdge];
+};
+
+const scanBackwards = (i: number, predicate: (a: number) => boolean): [number, boolean] => {
+  let score = 0;
+  let visibleFromEdge = true;
+
+  for (let a = i - 1; a >= 0; a--) {
+    score++;
+
+    if (predicate(a)) {
+      visibleFromEdge = false;
+      break;
+    }
+  }
+
+  return [score, visibleFromEdge];
+}
+
 const traverseGrid = (grid: string[][]) => {
   const results: Result[] = [];
 
@@ -7,54 +39,10 @@ const traverseGrid = (grid: string[][]) => {
     const row = grid[i];
 
     for (let j = 0; j < row.length; j++) {
-      let visibleFromRight = true;
-      let rightScore = 0;
-
-      for (let a = j + 1; a < row.length; a++) {
-        rightScore++;
-
-        if (Number.parseInt(row[j]) <= Number.parseInt(row[a])) {
-          visibleFromRight = false;
-          break;
-        }
-      }
-
-      let visibleFromLeft = true;
-      let leftScore = 0;
-
-      for (let a = j - 1; a >= 0; a--) {
-        leftScore++;
-
-        if (Number.parseInt(row[j]) <= Number.parseInt(row[a])) {
-          visibleFromLeft = false;
-          break;
-        }
-      }
-
-
-      let visibleFromBottom = true;
-      let bottomScore = 0;
-
-      for (let a = i + 1; a < grid.length; a++) {
-        bottomScore++;
-
-        if (Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j])) {
-          visibleFromBottom = false;
-          break;
-        }
-      }
-
-      let visibleFromTop = true;
-      let topScore = 0;
-
-      for (let a = i - 1; a >= 0; a--) {
-        topScore++;
-
-        if (Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j])) {
-          visibleFromTop = false;
-          break;
-        }
-      }
+      const [rightScore, visibleFromRight] = scan(j, row.length, a => Number.parseInt(row[j]) <= Number.parseInt(row[a]));
+      const [leftScore, visibleFromLeft] = scanBackwards(j, a => Number.parseInt(row[j]) <= Number.parseInt(row[a]));
+      const [bottomScore, visibleFromBottom] = scan(i, grid.length, a => Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j]));
+      const [topScore, visibleFromTop] = scanBackwards(i, a => Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j]));
 
       results.push([
         j,
