@@ -80,7 +80,7 @@ export const getHighestScenicScore = (input: string) => {
     .filter(Boolean) // removes file end line feed
     .map((row) => row.split(""));
 
-  return [...traverseGrid(grid)]
+  return traverseGrid(grid)
     .map(([, , , right, left, bottom, top]) => (
       right * left * bottom * top
     ))
