@@ -65,3 +65,5 @@ export const getVisibleTreesCount = (input: string) => {
 
   return visible.size;
 };
+
+export const getHighestScenicScore = (input: string) => 0;
