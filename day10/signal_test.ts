@@ -10,12 +10,15 @@ Deno.test("getSignalStrength() should return the total signal strength recorded 
 });
 
 Deno.test("run() should execute the instructions and return a final rendering of the CRT output", () => {
-  assertEquals(run(exampleInput), `##..##..##..##..##..##..##..##..##..##..
+  assertEquals(
+    run(exampleInput),
+    `##..##..##..##..##..##..##..##..##..##..
 ###...###...###...###...###...###...###.
 ####....####....####....####....####....
 #####.....#####.....#####.....#####.....
 ######......######......######......####
-#######.......#######.......#######.....`);
+#######.......#######.......#######.....`,
+  );
 
-  assertEquals(run(mainInput), '??');
+  assertEquals(run(mainInput), "??");
 });
