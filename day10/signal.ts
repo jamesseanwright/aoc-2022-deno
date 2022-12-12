@@ -33,3 +33,5 @@ export const getSignalStrength = (input: string, maxCycles: number) => {
 
   return signalStrength;
 };
+
+export const run = (input: string) => '';
