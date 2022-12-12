@@ -3,7 +3,7 @@ export const getVisibleTreesCount = (input: string) => {
 
   const grid = input.split("\n")
     .filter(Boolean) // removes file end line feed
-    .map(row => row.split(""));
+    .map((row) => row.split(""));
 
   for (let i = 0; i < grid.length; i++) {
     const row = grid[i];
@@ -19,7 +19,7 @@ export const getVisibleTreesCount = (input: string) => {
       }
 
       if (isVisibleFromRight) {
-        visible.add(`${i}${j}`);
+        visible.add(`${i}-${j}`);
       }
 
       let isVisibleFromLeft = true;
@@ -32,7 +32,7 @@ export const getVisibleTreesCount = (input: string) => {
       }
 
       if (isVisibleFromLeft) {
-        visible.add(`${i}${j}`);
+        visible.add(`${i}-${j}`);
       }
 
       let isVisibleFromBottom = true;
@@ -45,7 +45,7 @@ export const getVisibleTreesCount = (input: string) => {
       }
 
       if (isVisibleFromBottom) {
-        visible.add(`${i}${j}`);
+        visible.add(`${i}-${j}`);
       }
 
       let isVisibleFromTop = true;
@@ -58,7 +58,7 @@ export const getVisibleTreesCount = (input: string) => {
       }
 
       if (isVisibleFromTop) {
-        visible.add(`${i}${j}`);
+        visible.add(`${i}-${j}`);
       }
     }
   }
