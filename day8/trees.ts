@@ -1,5 +1,5 @@
 export const getVisibleTreesCount = (input: string) => {
-  let visible = 0;
+  const visible = new Set<string>();
 
   const grid = input.split("\n")
     .filter(Boolean) // removes file end line feed
@@ -9,15 +9,59 @@ export const getVisibleTreesCount = (input: string) => {
     const row = grid[i];
 
     for (let j = 0; j < row.length; j++) {
-      const atEdge = i === 0 || i === grid.length - 1 || j === 0 || j === row.length - 1;
+      let isVisibleFromRight = true;
 
-      if (atEdge) {
-        visible++;
-      } else {
+      for (let a = j + 1; a < row.length; a++) {
+        if (Number.parseInt(row[j]) <= Number.parseInt(row[a])) {
+          isVisibleFromRight = false;
+          break;
+        }
+      }
 
+      if (isVisibleFromRight) {
+        visible.add(`${i}${j}`);
+      }
+
+      let isVisibleFromLeft = true;
+
+      for (let a = j - 1; a >= 0; a--) {
+        if (Number.parseInt(row[j]) <= Number.parseInt(row[a])) {
+          isVisibleFromLeft = false;
+          break;
+        }
+      }
+
+      if (isVisibleFromLeft) {
+        visible.add(`${i}${j}`);
+      }
+
+      let isVisibleFromBottom = true;
+
+      for (let a = i + 1; a < grid.length; a++) {
+        if (Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j])) {
+          isVisibleFromBottom = false;
+          break;
+        }
+      }
+
+      if (isVisibleFromBottom) {
+        visible.add(`${i}${j}`);
+      }
+
+      let isVisibleFromTop = true;
+
+      for (let a = i - 1; a >= 0; a--) {
+        if (Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j])) {
+          isVisibleFromTop = false;
+          break;
+        }
+      }
+
+      if (isVisibleFromTop) {
+        visible.add(`${i}${j}`);
       }
     }
   }
 
-  return visible;
+  return visible.size;
 };
