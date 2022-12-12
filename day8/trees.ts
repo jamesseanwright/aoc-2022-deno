@@ -1,6 +1,10 @@
 type Result = [number, number, boolean, number, number, number, number];
 
-const scan = (i: number, n: number, predicate: (a: number) => boolean): [number, boolean] => {
+const scan = (
+  i: number,
+  n: number,
+  predicate: (a: number) => boolean,
+): [number, boolean] => {
   let score = 0;
   let visibleFromEdge = true;
 
@@ -16,7 +20,10 @@ const scan = (i: number, n: number, predicate: (a: number) => boolean): [number,
   return [score, visibleFromEdge];
 };
 
-const scanBackwards = (i: number, predicate: (a: number) => boolean): [number, boolean] => {
+const scanBackwards = (
+  i: number,
+  predicate: (a: number) => boolean,
+): [number, boolean] => {
   let score = 0;
   let visibleFromEdge = true;
 
@@ -30,7 +37,7 @@ const scanBackwards = (i: number, predicate: (a: number) => boolean): [number, b
   }
 
   return [score, visibleFromEdge];
-}
+};
 
 const traverseGrid = (grid: string[][]) => {
   const results: Result[] = [];
@@ -39,15 +46,33 @@ const traverseGrid = (grid: string[][]) => {
     const row = grid[i];
 
     for (let j = 0; j < row.length; j++) {
-      const [rightScore, visibleFromRight] = scan(j, row.length, a => Number.parseInt(row[j]) <= Number.parseInt(row[a]));
-      const [leftScore, visibleFromLeft] = scanBackwards(j, a => Number.parseInt(row[j]) <= Number.parseInt(row[a]));
-      const [bottomScore, visibleFromBottom] = scan(i, grid.length, a => Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j]));
-      const [topScore, visibleFromTop] = scanBackwards(i, a => Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j]));
+      const [rightScore, visibleFromRight] = scan(
+        j,
+        row.length,
+        (a) => Number.parseInt(row[j]) <= Number.parseInt(row[a]),
+      );
+
+      const [leftScore, visibleFromLeft] = scanBackwards(
+        j,
+        (a) => Number.parseInt(row[j]) <= Number.parseInt(row[a]),
+      );
+
+      const [bottomScore, visibleFromBottom] = scan(
+        i,
+        grid.length,
+        (a) => Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j]),
+      );
+
+      const [topScore, visibleFromTop] = scanBackwards(
+        i,
+        (a) => Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j]),
+      );
 
       results.push([
         j,
         i,
-        [visibleFromBottom, visibleFromLeft, visibleFromRight, visibleFromTop].some(v => v),
+        [visibleFromBottom, visibleFromLeft, visibleFromRight, visibleFromTop]
+          .some((v) => v),
         rightScore,
         leftScore,
         bottomScore,
@@ -57,7 +82,7 @@ const traverseGrid = (grid: string[][]) => {
   }
 
   return results;
-}
+};
 
 export const getVisibleTreesCount = (input: string) => {
   const visible = new Set<string>();
