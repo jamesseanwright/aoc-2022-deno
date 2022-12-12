@@ -43,11 +43,11 @@ export const run = (input: string) => {
 
   let x = 1;
   const stack: [string, string][] = [];
-  const screen = Array.from<boolean>({ length: CRT_SIZE }).fill(false);
+  const screen: boolean[] = [];
 
   for (let cycle = 1; cycle <= CRT_SIZE; cycle++) {
     const pixel = cycle - 1;
-    screen[pixel] = pixel >= x-1 && pixel <= x+1;
+    screen[pixel] = (pixel % SIGNAL_CYCLE_INTERVAL) >= x - 1 && (pixel % SIGNAL_CYCLE_INTERVAL) <= x + 1;
 
     if (stack.length > 0) {
       const [instruction, arg] = stack.pop()!;
