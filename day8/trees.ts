@@ -1,58 +1,74 @@
-type TreeScores = [number, number, number, number, number, number];
+type Result = [number, number, boolean, number, number, number, number];
 
-const getTreeScores = (grid: string[][]) => {
-  const scoreSet: TreeScores[] = [];
+const traverseGrid = (grid: string[][]) => {
+  const results: Result[] = [];
 
   for (let i = 0; i < grid.length; i++) {
     const row = grid[i];
 
     for (let j = 0; j < row.length; j++) {
+      let visibleFromRight = true;
       let rightScore = 0;
 
-      for (let a = j + 1; a <= row.length; a++) {
-        if (Number.parseInt(row[j]) > Number.parseInt(row[a])) {
-          rightScore++;
-        } else {
+      for (let a = j + 1; a < row.length; a++) {
+        rightScore++;
+
+        if (Number.parseInt(row[j]) <= Number.parseInt(row[a])) {
+          visibleFromRight = false;
           break;
         }
       }
 
+      let visibleFromLeft = true;
       let leftScore = 0;
 
       for (let a = j - 1; a >= 0; a--) {
-        if (Number.parseInt(row[j]) > Number.parseInt(row[a])) {
-          leftScore++;
-        } else {
+        leftScore++;
+
+        if (Number.parseInt(row[j]) <= Number.parseInt(row[a])) {
+          visibleFromLeft = false;
           break;
         }
       }
 
 
+      let visibleFromBottom = true;
       let bottomScore = 0;
 
       for (let a = i + 1; a < grid.length; a++) {
-        if (Number.parseInt(grid[i][j]) > Number.parseInt(grid[a][j])) {
-          bottomScore++;
-        } else {
+        bottomScore++;
+
+        if (Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j])) {
+          visibleFromBottom = false;
           break;
         }
       }
 
+      let visibleFromTop = true;
       let topScore = 0;
 
       for (let a = i - 1; a >= 0; a--) {
-        if (Number.parseInt(grid[i][j]) > Number.parseInt(grid[a][j])) {
-          topScore++;
-        } else {
+        topScore++;
+
+        if (Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j])) {
+          visibleFromTop = false;
           break;
         }
       }
 
-      scoreSet.push([j, i, rightScore, leftScore, bottomScore, topScore]);
+      results.push([
+        j,
+        i,
+        [visibleFromBottom, visibleFromLeft, visibleFromRight, visibleFromTop].some(v => v),
+        rightScore,
+        leftScore,
+        bottomScore,
+        topScore,
+      ]);
     }
   }
 
-  return scoreSet;
+  return results;
 }
 
 export const getVisibleTreesCount = (input: string) => {
@@ -62,16 +78,8 @@ export const getVisibleTreesCount = (input: string) => {
     .filter(Boolean) // removes file end line feed
     .map((row) => row.split(""));
 
-  const rowCount = grid.length;
-  const colCount = grid[0].length;
-
-  getTreeScores(grid).forEach(([x, y, right, left, bottom, top]) => {
-    if (
-      x + right === rowCount - 1 ||
-      x - left === 0 ||
-      y + bottom === colCount - 1 ||
-      y - top === 0
-    ) {
+  traverseGrid(grid).forEach(([x, y, isVisibleFromEdge]) => {
+    if (isVisibleFromEdge) {
       visible.add(`${x}-${y}`);
     }
   });
@@ -80,60 +88,13 @@ export const getVisibleTreesCount = (input: string) => {
 };
 
 export const getHighestScenicScore = (input: string) => {
-  const scores = new Set<number>();
-
   const grid = input.split("\n")
     .filter(Boolean) // removes file end line feed
     .map((row) => row.split(""));
 
-  for (let i = 0; i < grid.length; i++) {
-    const row = grid[i];
-
-    for (let j = 0; j < row.length; j++) {
-      let rightScore = 0;
-
-      for (let a = j + 1; a < row.length; a++) {
-        rightScore++;
-
-        if (Number.parseInt(row[j]) <= Number.parseInt(row[a])) {
-          break;
-        }
-      }
-
-      let leftScore = 0;
-
-      for (let a = j - 1; a >= 0; a--) {
-        leftScore++;
-
-        if (Number.parseInt(row[j]) <= Number.parseInt(row[a])) {
-          break;
-        }
-      }
-
-
-      let bottomScore = 0;
-
-      for (let a = i + 1; a < grid.length; a++) {
-        bottomScore++;
-
-        if (Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j])) {
-          break;
-        }
-      }
-
-      let topScore = 0;
-
-      for (let a = i - 1; a >= 0; a--) {
-        topScore++;
-
-        if (Number.parseInt(grid[i][j]) <= Number.parseInt(grid[a][j])) {
-          break;
-        }
-      }
-
-      scores.add(rightScore * leftScore * bottomScore * topScore);
-    }
-  }
-
-  return [...scores.values()].toSorted((a, b) => b - a)[0];
+  return [...traverseGrid(grid)]
+    .map(([, , , right, left, bottom, top]) => (
+      right * left * bottom * top
+    ))
+    .toSorted((a, b) => b - a)[0];
 };
