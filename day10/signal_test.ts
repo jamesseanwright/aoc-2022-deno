@@ -6,5 +6,5 @@ const mainInput = Deno.readTextFileSync("./day10/main_input.txt");
 
 Deno.test("getSignalStrength() should return the total signal strength recorded within the given cycle window", () => {
   assertEquals(getSignalStrength(exampleInput, 220), 13140);
-  assertEquals(getSignalStrength(mainInput, 220), -1);
+  assertEquals(getSignalStrength(mainInput, 220), 13180);
 });
