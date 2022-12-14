@@ -11,15 +11,11 @@ const compare = (a: string[], b: string[]): boolean => {
     const right = b[i];
     const left = a[i];
 
-    if (!left) {
-      return true;
-    }
-
     if (isList(left) || isList(right)) {
       return compare(parseList(left), parseList(right));
     }
 
-    if (Number.parseInt(left) < Number.parseInt(right)) {
+    if (right && !left || Number.parseInt(left) < Number.parseInt(right)) {
       return true;
     }
   }
