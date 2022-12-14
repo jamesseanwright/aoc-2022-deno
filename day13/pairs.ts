@@ -13,11 +13,11 @@ export const getPacketPairIntegritySum = (input: string) => {
       }
 
       if (!isList(left) && isList(right)) {
-        return compare(left, right.slice(1));
+        return compare(left, b.slice(1));
       }
 
       if (isList(left) && !isList(right)) {
-        return compare(left.slice(1), right);
+        return compare(a.slice(1), right);
       }
 
       return equal && Number.parseInt(left) < Number.parseInt(right);
