@@ -6,9 +6,14 @@ const isList = (x?: string) => x?.[0] === "[";
 const parseList = (x: string) => isList(x) ? x.slice(1, -1).split(",") : [x];
 
 const compare = (a: string[], b: string[]): boolean => {
-  for (let i = 0; i < a.length; i++) {
-    const left = a[i];
+  console.log('*****', a, b);
+  for (let i = 0; i < b.length; i++) {
     const right = b[i];
+    const left = a[i];
+
+    if (!left) {
+      return true;
+    }
 
     if (isList(left) || isList(right)) {
       return compare(parseList(left), parseList(right));
