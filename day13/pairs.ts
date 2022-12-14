@@ -31,5 +31,5 @@ export const getPacketPairIntegritySum = (input: string) => {
       return Number.parseInt(left) < Number.parseInt(right);
     }, areEqual);
 
-  return pairs.reduce((total, [a, b]) => compare(parseList(a), parseList(b)) ? total + 1 : total, 0)
+  return pairs.reduce((total, [a, b], i) => compare(parseList(a), parseList(b)) ? total + i + 1 : total, 0)
 }
