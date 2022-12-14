@@ -1,8 +1,11 @@
+const isList = (x: string) => x[0] === '[';
+
 // Note that this only parses the
 // top-level into an array; any child
 // lists are then parsed just-in-time.
-const parseList = (list: string) => list.slice(1, -1).split(",");
-const isList = (x: string) => x[0] === '[';
+const parseList = (x: string) => isList(x)
+  ? x.slice(1, -1).split(",")
+  : [x];
 
 export const getPacketPairIntegritySum = (input: string) => {
   const pairs = [...input.matchAll(/(\[.*\])\n(\[.*\])\n\n/g)]
@@ -16,16 +19,8 @@ export const getPacketPairIntegritySum = (input: string) => {
         return equal;
       }
 
-      if (isList(left) && isList(right)) {
+      if (isList(left) || isList(right)) {
         return compare(parseList(left), parseList(right), areEqual);
-      }
-
-      if (!isList(left) && isList(right)) {
-        return compare([left], parseList(right), areEqual);
-      }
-
-      if (isList(left) && !isList(right)) {
-        return compare(parseList(left), [right], areEqual);
       }
 
       return Number.parseInt(left) < Number.parseInt(right);
