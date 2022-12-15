@@ -25,7 +25,7 @@ const compare = (a: Item[], b: Item[]): boolean => {
 };
 
 export const getPacketPairIntegritySum = (input: string) => {
-  const pairs = [...input.matchAll(/(\[.*\])\n(\[.*\])\n\n/g)]
+  const pairs = [...input.matchAll(/(\[.*\])\n(\[.*\])\n/g)]
     .map(([, ...pair]) => pair)
     .map(([left, right]) => [parseList(left), parseList(right)]);
 
