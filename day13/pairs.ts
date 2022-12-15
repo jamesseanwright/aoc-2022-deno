@@ -1,6 +1,6 @@
 type Item = string | string[];
 
-const isList = (x: string) => x === '[';
+const isList = (x: string) => x === "[";
 
 const parseList = (list: string): Item[] => {
   const arr: Item[] = [];
@@ -24,9 +24,7 @@ const parseList = (list: string): Item[] => {
   return arr;
 };
 
-const coerce = (x: Item) => Array.isArray(x)
-  ? x
-  : [x];
+const coerce = (x: Item) => Array.isArray(x) ? x : [x];
 
 const compare = (a: Item[], b: Item[]): boolean => {
   for (let i = 0; i < b.length; i++) {
@@ -51,8 +49,7 @@ export const getPacketPairIntegritySum = (input: string) => {
     .map(([left, right]) => [parseList(left), parseList(right)]);
 
   return pairs.reduce(
-    (total, [a, b], i) =>
-      compare(a, b) ? total + i + 1 : total,
+    (total, [a, b], i) => compare(a, b) ? total + i + 1 : total,
     0,
   );
 };
