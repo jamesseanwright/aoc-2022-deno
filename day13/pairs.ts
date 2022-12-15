@@ -1,29 +1,6 @@
 type Item = string | string[];
 
-const isList = (x: string) => x === "[";
-
-const parseList = (list: string): Item[] => {
-  const arr: Item[] = [];
-
-  const walk = (x: string, i = 1, out = arr) => {
-    if (i === x.length - 1) {
-      return;
-    }
-
-    if (isList(x)) {
-      const children: string[] = [];
-      out.push(children);
-      walk(x, i + 1, children);
-    } else {
-      walk(x, i + 1, out);
-    }
-  };
-
-  walk(list);
-
-  return arr;
-};
-
+const parseList = (list: string): Item[] => JSON.parse(list);
 const coerce = (x: Item) => Array.isArray(x) ? x : [x];
 
 const compare = (a: Item[], b: Item[]): boolean => {
@@ -35,12 +12,12 @@ const compare = (a: Item[], b: Item[]): boolean => {
       return compare(coerce(left), coerce(right));
     }
 
-    if (right && !left || Number.parseInt(left) < Number.parseInt(right)) {
-      return true;
+    if (Number.parseInt(left) > Number.parseInt(right)) {
+      return false;
     }
   }
 
-  return false;
+  return true;
 };
 
 export const getPacketPairIntegritySum = (input: string) => {
