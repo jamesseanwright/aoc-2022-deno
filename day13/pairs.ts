@@ -4,9 +4,13 @@ const parseList = (list: string): Item[] => JSON.parse(list);
 const coerce = (x: Item) => Array.isArray(x) ? x : [x];
 
 const compare = (a: Item[], b: Item[]): boolean => {
-  for (let i = 0; i < b.length; i++) {
-    const right = b[i];
+  for (let i = 0; i < a.length; i++) {
     const left = a[i];
+    const right = b[i];
+
+    if (left && !right) {
+      return false;
+    }
 
     if (Array.isArray(left) || Array.isArray(right)) {
       return compare(coerce(left), coerce(right));
