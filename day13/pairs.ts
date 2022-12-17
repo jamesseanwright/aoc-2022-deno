@@ -5,7 +5,10 @@ const coerce = (x: Item) => Array.isArray(x) ? x : [x];
 
 const compare = (left: Item[], right: Item[]): boolean => {
   for (let i = 0; i < left.length; i++) {
-    if ((Array.isArray(left[i]) || Array.isArray(right[i])) && !compare(coerce(left[i]), coerce(right[i]))) {
+    if (
+      (Array.isArray(left[i]) || Array.isArray(right[i])) &&
+      !compare(coerce(left[i]), coerce(right[i]))
+    ) {
       return false;
     }
 
