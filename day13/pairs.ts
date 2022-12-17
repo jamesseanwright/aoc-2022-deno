@@ -10,10 +10,9 @@ const compare = (left: Item[], right: Item[]): boolean => {
     }
 
     if (
-      (Array.isArray(left[i]) || Array.isArray(right[i])) &&
-      !compare(coerce(left[i]), coerce(right[i]))
+      (Array.isArray(left[i]) || Array.isArray(right[i]))
     ) {
-      return false;
+      return compare(coerce(left[i]), coerce(right[i]));
     }
 
     if (typeof left[i] === "number" && typeof right[i] === "number" && left[i] !== right[i]) { // TODO: abstract as type guard and document
