@@ -16,14 +16,8 @@ const compare = (left: Item[], right: Item[]): boolean => {
       return false;
     }
 
-    if (typeof left[i] === "number" && typeof right[i] === "number") { // TODO: abstract as type guard and document
-      if (left[i] < right[i]) {
-        return true;
-      }
-
-      if (left[i] > right[i]) {
-        return false;
-      }
+    if (typeof left[i] === "number" && typeof right[i] === "number" && left[i] !== right[i]) { // TODO: abstract as type guard and document
+      return left[i] < right[i];
     }
   }
 
