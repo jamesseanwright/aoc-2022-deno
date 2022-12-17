@@ -49,3 +49,5 @@ export const getPacketPairIntegritySum = (input: string) =>
         compare(left, right) === ComparisonResult.Left ? total + i + 1 : total,
       0,
     );
+
+export const getDecoderKey = (input: string, ...dividers: string[]) => 0;
