@@ -6,5 +6,5 @@ const mainInput = Deno.readTextFileSync("./day13/main_input.txt");
 
 Deno.test("getPacketPairIntegritySum() should return the sum of the indices of all valid packet pairs", () => {
   assertEquals(getPacketPairIntegritySum(exampleInput), 13);
-  assertEquals(getPacketPairIntegritySum(mainInput), -1);
+  assertEquals(getPacketPairIntegritySum(mainInput), 6240);
 });

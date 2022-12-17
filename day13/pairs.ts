@@ -3,24 +3,41 @@ type Item = number | number[];
 const parseList = (list: string): Item[] => JSON.parse(list);
 const coerce = (x: Item) => Array.isArray(x) ? x : [x];
 
-const compare = (left: Item[], right: Item[]): boolean => {
+enum ComparisonResult {
+  Left,
+  Right,
+  Equal,
+}
+
+const compare = (left: Item[], right: Item[]): ComparisonResult => {
   for (let i = 0; i < left.length; i++) {
     if (right[i] === undefined) {
-      return false;
+      return ComparisonResult.Right;
+    }
+
+    if (
+      typeof left[i] === "number" && typeof right[i] === "number" &&
+      left[i] !== right[i]
+    ) { // TODO: abstract as type guard and document
+      return left[i] < right[i]
+        ? ComparisonResult.Left
+        : ComparisonResult.Right;
     }
 
     if (
       (Array.isArray(left[i]) || Array.isArray(right[i]))
     ) {
-      return compare(coerce(left[i]), coerce(right[i]));
-    }
+      const res = compare(coerce(left[i]), coerce(right[i]));
 
-    if (typeof left[i] === "number" && typeof right[i] === "number" && left[i] !== right[i]) { // TODO: abstract as type guard and document
-      return left[i] < right[i];
+      if (res !== ComparisonResult.Equal) {
+        return res;
+      }
     }
   }
 
-  return true;
+  return left.length === right.length
+    ? ComparisonResult.Equal
+    : ComparisonResult.Left;
 };
 
 export const getPacketPairIntegritySum = (input: string) =>
@@ -28,6 +45,7 @@ export const getPacketPairIntegritySum = (input: string) =>
     .map(([, ...pair]) => pair)
     .map(([left, right]) => [parseList(left), parseList(right)])
     .reduce(
-      (total, [left, right], i) => compare(left, right) ? total + i + 1 : total,
+      (total, [left, right], i) =>
+        compare(left, right) === ComparisonResult.Left ? total + i + 1 : total,
       0,
     );
