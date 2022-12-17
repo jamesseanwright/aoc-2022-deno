@@ -40,6 +40,9 @@ const compare = (left: Item[], right: Item[]): ComparisonResult => {
     : ComparisonResult.Left;
 };
 
+const indexOfList = (lists: Item[][], list: Item[]) =>
+  lists.findIndex((x) => compare(x, list) === ComparisonResult.Equal);
+
 export const getPacketPairIntegritySum = (input: string) =>
   [...input.matchAll(/(\[.*\])\n(\[.*\])\n/g)]
     .map(([, ...pair]) => pair)
@@ -56,11 +59,11 @@ export const getDecoderKey = (input: string, divA: string, divB: string) => {
 
   const sorted = [
     ...(input.match(/^\[.*\]$/gm) || [])
-      .map(list => parseList(list)),
+      .map((list) => parseList(list)),
     parsedA,
     parsedB,
   ].toSorted((a, b) => compare(a, b));
 
-  return (sorted.findIndex(item => compare(item, parsedA) === ComparisonResult.Equal) + 1)
-    * (sorted.findIndex(item => compare(item, parsedB) === ComparisonResult.Equal) + 1);
-}
+  return (indexOfList(sorted, parsedA) + 1) *
+    (indexOfList(sorted, parsedB) + 1);
+};
