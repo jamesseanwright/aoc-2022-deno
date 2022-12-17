@@ -4,7 +4,7 @@ const parseList = (list: string): Item[] => JSON.parse(list);
 const coerce = (x: Item) => Array.isArray(x) ? x : [x];
 
 enum ComparisonResult {
-  Left,
+  Left = -1,
   Right,
   Equal,
 }
@@ -50,4 +50,17 @@ export const getPacketPairIntegritySum = (input: string) =>
       0,
     );
 
-export const getDecoderKey = (input: string, ...dividers: string[]) => 0;
+export const getDecoderKey = (input: string, divA: string, divB: string) => {
+  const parsedA = parseList(divA);
+  const parsedB = parseList(divB);
+
+  const sorted = [
+    ...(input.match(/^\[.*\]$/gm) || [])
+      .map(list => parseList(list)),
+    parsedA,
+    parsedB,
+  ].toSorted((a, b) => compare(a, b));
+
+  return (sorted.findIndex(item => compare(item, parsedA) === ComparisonResult.Equal) + 1)
+    * (sorted.findIndex(item => compare(item, parsedB) === ComparisonResult.Equal) + 1);
+}

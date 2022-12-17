@@ -11,5 +11,5 @@ Deno.test("getPacketPairIntegritySum() should return the sum of the indices of a
 
 Deno.test("getDecoderKey() should return the expected key for the given divider packets", () => {
   assertEquals(getDecoderKey(exampleInput, "[[2]]", "[[6]]"), 140);
-  assertEquals(getDecoderKey(mainInput, "[[2]]", "[[6]]"), -1);
+  assertEquals(getDecoderKey(mainInput, "[[2]]", "[[6]]"), 23142);
 });
