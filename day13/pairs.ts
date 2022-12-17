@@ -4,18 +4,24 @@ const parseList = (list: string): Item[] => JSON.parse(list);
 const coerce = (x: Item) => Array.isArray(x) ? x : [x];
 
 const compare = (left: Item[], right: Item[]): boolean => {
-  for (let i = 0; i < right.length; i++) {
-    if ((Array.isArray(left[i]) || Array.isArray(right[i])) && compare(coerce(left[i]), coerce(right[i]))) {
+  for (let i = 0; i < left.length; i++) {
+    if ((Array.isArray(left[i]) || Array.isArray(right[i])) && !compare(coerce(left[i]), coerce(right[i]))) {
+      return false;
+    }
+
+    if (right[i] === undefined) {
+      return false;
+    }
+
+    if (
+      Number.parseInt(left[i] as string) < Number.parseInt(right[i] as string)
+    ) {
       return true;
     }
 
     if (
       Number.parseInt(left[i] as string) > Number.parseInt(right[i] as string)
     ) {
-      return false;
-    }
-
-    if (i === right.length - 1 && left[i + 1]) {
       return false;
     }
   }
