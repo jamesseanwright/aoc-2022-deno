@@ -1,8 +1,8 @@
 import { assertEquals } from "https://deno.land/std@0.166.0/testing/asserts.ts";
 import { arrangeStacks } from "./stacks.ts";
 
-const exampleInput = Deno.readTextFileSync("./day5/example_input.txt");
-const mainInput = Deno.readTextFileSync("./day5/main_input.txt");
+const exampleInput = Deno.readTextFileSync("./day05/example_input.txt");
+const mainInput = Deno.readTextFileSync("./day05/main_input.txt");
 
 Deno.test("arrangeStacks() should arrange the stacks by interpreting the given instructions", () => {
   const exampleStacks = arrangeStacks(exampleInput);

@@ -1,8 +1,8 @@
 import { assertEquals } from "https://deno.land/std@0.166.0/testing/asserts.ts";
 import { findDeletionCandidate, sumSizeOfDirectoriesWithinSize } from "./fs.ts";
 
-const exampleInput = Deno.readTextFileSync("./day7/example_input.txt");
-const mainInput = Deno.readTextFileSync("./day7/main_input.txt");
+const exampleInput = Deno.readTextFileSync("./day07/example_input.txt");
+const mainInput = Deno.readTextFileSync("./day07/main_input.txt");
 
 Deno.test("sumSizeOfDirectoriesWithinSize() should return the total size of all the directories that are no greater than the specified size bound", () => {
   // assertEquals(sumSizeOfDirectoriesWithinSize(exampleInput, 100000), 95437); // <= not sure why this is failing

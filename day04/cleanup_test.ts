@@ -5,8 +5,8 @@ import {
   countPairsWithPartiallyOverlappingRanges,
 } from "./cleanup.ts";
 
-const exampleInput = Deno.readTextFileSync("./day4/example_input.txt");
-const mainInput = Deno.readTextFileSync("./day4/main_input.txt");
+const exampleInput = Deno.readTextFileSync("./day04/example_input.txt");
+const mainInput = Deno.readTextFileSync("./day04/main_input.txt");
 
 Deno.test("countPairsWithFullyOverlappingRanges() should return the number of pairs where one range fully contains the other", () => {
   assertEquals(countPairsWithFullyOverlappingRanges(exampleInput), 2);

@@ -4,8 +4,8 @@ import {
   calculateScoreByStrategy,
 } from "./rock_paper_scissors.ts";
 
-const exampleInput = Deno.readTextFileSync("./day2/example_input.txt");
-const mainInput = Deno.readTextFileSync("./day2/main_input.txt");
+const exampleInput = Deno.readTextFileSync("./day02/example_input.txt");
+const mainInput = Deno.readTextFileSync("./day02/main_input.txt");
 
 Deno.test("calculateScoreByMoves() should calculate the correct score assuming the pairs represent the player's and opponent's respective moves", () => {
   assertEquals(calculateScoreByMoves(exampleInput), 15);

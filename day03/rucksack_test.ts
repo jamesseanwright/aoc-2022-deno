@@ -5,8 +5,8 @@ import {
   aggregrateCommonGroupItemPriorities,
 } from "./rucksack.ts";
 
-const exampleInput = Deno.readTextFileSync("./day3/example_input.txt");
-const mainInput = Deno.readTextFileSync("./day3/main_input.txt");
+const exampleInput = Deno.readTextFileSync("./day03/example_input.txt");
+const mainInput = Deno.readTextFileSync("./day03/main_input.txt");
 
 Deno.test("aggregateCommonRowItemPriorities() should compute the sum of the items' priorities that occur in both partitions of each row", () => {
   assertEquals(aggregateCommonRowItemPriorities(exampleInput), 157);
