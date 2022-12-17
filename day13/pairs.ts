@@ -1,10 +1,14 @@
-type Item = string | string[];
+type Item = number | number[];
 
 const parseList = (list: string): Item[] => JSON.parse(list);
 const coerce = (x: Item) => Array.isArray(x) ? x : [x];
 
 const compare = (left: Item[], right: Item[]): boolean => {
   for (let i = 0; i < left.length; i++) {
+    if (right[i] === undefined) {
+      return false;
+    }
+
     if (
       (Array.isArray(left[i]) || Array.isArray(right[i])) &&
       !compare(coerce(left[i]), coerce(right[i]))
@@ -12,20 +16,14 @@ const compare = (left: Item[], right: Item[]): boolean => {
       return false;
     }
 
-    if (right[i] === undefined) {
-      return false;
-    }
+    if (typeof left[i] === "number" && typeof right[i] === "number") { // TODO: abstract as type guard and document
+      if (left[i] < right[i]) {
+        return true;
+      }
 
-    if (
-      Number.parseInt(left[i] as string) < Number.parseInt(right[i] as string)
-    ) {
-      return true;
-    }
-
-    if (
-      Number.parseInt(left[i] as string) > Number.parseInt(right[i] as string)
-    ) {
-      return false;
+      if (left[i] > right[i]) {
+        return false;
+      }
     }
   }
 
