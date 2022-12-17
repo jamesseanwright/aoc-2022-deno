@@ -9,6 +9,9 @@ enum ComparisonResult {
   Equal,
 }
 
+// Returns the *smallest* item i.e:
+// * ComparisonResult.Left === left list is smallest
+// * ComparisonResult.Right === right list is smallest
 const compare = (left: Item[], right: Item[]): ComparisonResult => {
   for (let i = 0; i < left.length; i++) {
     if (right[i] === undefined) {
@@ -18,7 +21,7 @@ const compare = (left: Item[], right: Item[]): ComparisonResult => {
     if (
       typeof left[i] === "number" && typeof right[i] === "number" &&
       left[i] !== right[i]
-    ) { // TODO: abstract as type guard and document
+    ) {
       return left[i] < right[i]
         ? ComparisonResult.Left
         : ComparisonResult.Right;
