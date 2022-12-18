@@ -1,10 +1,28 @@
-const createOperation = (left: string, operator: string, right: string) => ({
+const WORRY_LEVEL_DIVISOR = 3;
+
+interface Operation {
+  left: string;
+  operator: string;
+  right: string;
+}
+
+interface Test {
+  divisor: number;
+  left: number;
+  right: number;
+}
+
+const createOperation = (
+  left: string,
+  operator: string,
+  right: string,
+): Operation => ({
   left,
   operator,
   right,
 });
 
-const createTest = (divisor: string, left: string, right: string) => ({
+const createTest = (divisor: string, left: string, right: string): Test => ({
   divisor: Number.parseInt(divisor),
   left: Number.parseInt(left),
   right: Number.parseInt(right),
@@ -23,10 +41,35 @@ const createMonkey = (
     testRight,
   ]: RegExpMatchArray,
 ) => ({
+  inspected: 0,
   items: items.split(", ").map((x) => Number.parseInt(x)),
   operation: createOperation(leftOperand, operator, rightOperand),
   test: createTest(testDivisor, testLeft, testRight),
 });
+
+const invokeOperation = (item: number, op: Operation) => {
+  const left = op.left === "old" ? item : Number.parseInt(op.left);
+
+  const right = op.right === "old" ? item : Number.parseInt(op.right);
+
+  switch (op.operator) {
+    case "*":
+      return left * right;
+    case "/":
+      return left / right;
+    case "+":
+      return left + right;
+    case "-":
+      return left - right;
+    default:
+      throw new Error(
+        `Unrecognised operator ${op.operator} in operation expression`,
+      );
+  }
+};
+
+const invokeTest = (worryLevel: number, test: Test) =>
+  Math.floor(worryLevel / 3) / test.divisor === 0 ? test.left : test.right;
 
 export const getMonkeyBusinessLevel = (input: string, rounds: number) => {
   const monkeys = [
@@ -36,5 +79,21 @@ export const getMonkeyBusinessLevel = (input: string, rounds: number) => {
   ]
     .map((match) => createMonkey(match));
 
-  return 0;
+  for (let i = 0; i < rounds; i++) {
+    for (const monkey of monkeys) {
+      const item = monkey.items.shift();
+
+      if (item) {
+        const worryLevel = invokeOperation(item, monkey.operation);
+        const targetMonkey = invokeTest(worryLevel, monkey.test);
+
+        monkeys[targetMonkey].items.push(worryLevel);
+        monkey.inspected++;
+      }
+    }
+  }
+
+  return monkeys.toSorted((a, b) => b.inspected - a.inspected)
+    .slice(0, 2)
+    .reduce((n, monkey) => n * monkey.inspected, 1);
 };
