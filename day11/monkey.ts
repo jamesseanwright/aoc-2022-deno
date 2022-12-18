@@ -5,14 +5,14 @@ interface Operation {
 }
 
 interface Test {
-  divisor: bigint;
+  divisor: number;
   left: number;
   right: number;
 }
 
 interface Monkey {
   inspected: number;
-  items: bigint[];
+  items: number[];
   operation: Operation;
   test: Test;
 }
@@ -28,7 +28,7 @@ const createOperation = (
 });
 
 const createTest = (divisor: string, left: string, right: string): Test => ({
-  divisor: BigInt(divisor),
+  divisor: Number.parseInt(divisor),
   left: Number.parseInt(left),
   right: Number.parseInt(right),
 });
@@ -47,14 +47,14 @@ const createMonkey = (
   ]: RegExpMatchArray,
 ): Monkey => ({
   inspected: 0,
-  items: items.split(", ").map((x) => BigInt(x)),
+  items: items.split(", ").map((x) => Number.parseInt(x)),
   operation: createOperation(leftOperand, operator, rightOperand),
   test: createTest(testDivisor, testLeft, testRight),
 });
 
-const invokeOperation = (item: bigint, op: Operation, m: bigint) => {
-  const left = op.left === "old" ? item : BigInt(op.left);
-  const right = op.right === "old" ? item : BigInt(op.right);
+const invokeOperation = (item: number, op: Operation, m: number) => {
+  const left = op.left === "old" ? item : Number.parseInt(op.left);
+  const right = op.right === "old" ? item : Number.parseInt(op.right);
 
   switch (op.operator) {
     case "*":
@@ -68,13 +68,17 @@ const invokeOperation = (item: bigint, op: Operation, m: bigint) => {
   }
 };
 
-const invokeTest = (worryLevel: bigint, test: Test) =>
-  worryLevel % test.divisor === 0n ? test.left : test.right;
+const invokeTest = (worryLevel: number, test: Test) =>
+  worryLevel % test.divisor === 0 ? test.left : test.right;
 
 const getDivisorProduct = (monkeys: Monkey[]) =>
-  monkeys.reduce((n, monkey) => n * monkey.test.divisor, 1n);
+  monkeys.reduce((n, monkey) => n * monkey.test.divisor, 1);
 
-export const getMonkeyBusinessLevel = (input: string, rounds: number, worryLevelDivisor = 1n) => {
+export const getMonkeyBusinessLevel = (
+  input: string,
+  rounds: number,
+  worryLevelDivisor = 1,
+) => {
   const monkeys = [
     ...input.matchAll(
       /Monkey (\d+):\n\s{2}Starting items: (.+)\n\s{2}Operation: new = (.*) ([\*\+]) (.*)\n\s{2}Test: divisible by (\d+)\n\s{4}If true: throw to monkey (\d+)\n\s{4}If false: throw to monkey (\d+)\n/g,
@@ -90,7 +94,7 @@ export const getMonkeyBusinessLevel = (input: string, rounds: number, worryLevel
 
       while (item !== undefined) {
         const worryLevel = invokeOperation(item, monkey.operation, m);
-        const normalisedLevel = worryLevel / worryLevelDivisor;
+        const normalisedLevel = Math.floor(worryLevel / worryLevelDivisor);
         const targetMonkey = invokeTest(normalisedLevel, monkey.test);
 
         monkeys[targetMonkey].items.push(normalisedLevel);
