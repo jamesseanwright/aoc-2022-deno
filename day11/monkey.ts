@@ -60,9 +60,9 @@ const invokeOperation = (item: number, op: Operation, m?: number) => {
 
   switch (op.operator) {
     case "*":
-      return withM((withM(left, m) * withM(right, m)), m);
+      return withM(withM(left, m) * withM(right, m), m);
     case "+":
-      return withM((withM(left, m) + withM(right, m)), m);
+      return withM(withM(left, m) + withM(right, m), m);
     default:
       throw new Error(
         `Unrecognised operator ${op.operator} in operation expression`,
@@ -88,9 +88,7 @@ export const getMonkeyBusinessLevel = (
   ]
     .map((match) => createMonkey(match));
 
-  const m = worryLevelDivisor === 1
-    ? getDivisorProduct(monkeys)
-    : undefined
+  const m = worryLevelDivisor === 1 ? getDivisorProduct(monkeys) : undefined;
 
   for (let i = 0; i < rounds; i++) {
     for (const monkey of monkeys) {
