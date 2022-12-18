@@ -69,7 +69,7 @@ const invokeOperation = (item: number, op: Operation) => {
 };
 
 const invokeTest = (worryLevel: number, test: Test) =>
-  Math.floor(worryLevel / 3) / test.divisor === 0 ? test.left : test.right;
+  worryLevel / test.divisor === 0 ? test.left : test.right;
 
 export const getMonkeyBusinessLevel = (input: string, rounds: number) => {
   const monkeys = [
@@ -83,11 +83,12 @@ export const getMonkeyBusinessLevel = (input: string, rounds: number) => {
     for (const monkey of monkeys) {
       const item = monkey.items.shift();
 
-      if (item) {
+      if (item !== undefined) {
         const worryLevel = invokeOperation(item, monkey.operation);
-        const targetMonkey = invokeTest(worryLevel, monkey.test);
+        const normalisedLevel = Math.floor(worryLevel / 3);
+        const targetMonkey = invokeTest(normalisedLevel, monkey.test);
 
-        monkeys[targetMonkey].items.push(worryLevel);
+        monkeys[targetMonkey].items.push(normalisedLevel);
         monkey.inspected++;
       }
     }
