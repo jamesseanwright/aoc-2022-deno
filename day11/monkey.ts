@@ -85,7 +85,7 @@ export const getMonkeyBusinessLevel = (input: string, rounds: number) => {
 
       while (item !== undefined) {
         const worryLevel = invokeOperation(item, monkey.operation);
-        const normalisedLevel = Math.floor(worryLevel / 3);
+        const normalisedLevel = Math.floor(worryLevel / WORRY_LEVEL_DIVISOR);
         const targetMonkey = invokeTest(normalisedLevel, monkey.test);
 
         monkeys[targetMonkey].items.push(normalisedLevel);
