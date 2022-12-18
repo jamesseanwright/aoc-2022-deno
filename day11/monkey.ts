@@ -49,7 +49,6 @@ const createMonkey = (
 
 const invokeOperation = (item: number, op: Operation) => {
   const left = op.left === "old" ? item : Number.parseInt(op.left);
-
   const right = op.right === "old" ? item : Number.parseInt(op.right);
 
   switch (op.operator) {
