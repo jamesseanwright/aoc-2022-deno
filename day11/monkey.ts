@@ -73,6 +73,14 @@ const invokeOperation = (item: number, op: Operation, m?: number) => {
 const invokeTest = (worryLevel: number, test: Test) =>
   worryLevel % test.divisor === 0 ? test.left : test.right;
 
+// To handle bigger worry levels, we can multiply all of
+// the divisors in the set of monkeys, m, and apply it as
+// a modulo to each operand and the overall result of an
+// operation. This takes advantage of k: (a mod km) mod m = a mod m,
+// where:
+// * k: set of all integers
+// * a: an input integer
+// See: r/adventofcode/comments/zihouc/comment/izrimjo
 const getDivisorProduct = (monkeys: Monkey[]) =>
   monkeys.reduce((n, monkey) => n * monkey.test.divisor, 1);
 
