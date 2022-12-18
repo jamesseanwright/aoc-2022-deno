@@ -52,15 +52,17 @@ const createMonkey = (
   test: createTest(testDivisor, testLeft, testRight),
 });
 
-const invokeOperation = (item: number, op: Operation, m: number) => {
+const withM = (x: number, m?: number) => m ? x % m : x;
+
+const invokeOperation = (item: number, op: Operation, m?: number) => {
   const left = op.left === "old" ? item : Number.parseInt(op.left);
   const right = op.right === "old" ? item : Number.parseInt(op.right);
 
   switch (op.operator) {
     case "*":
-      return ((left % m) * (right % m)) % m;
+      return withM((withM(left, m) * withM(right, m)), m);
     case "+":
-      return ((left % m) + (right % m)) % m;
+      return withM((withM(left, m) + withM(right, m)), m);
     default:
       throw new Error(
         `Unrecognised operator ${op.operator} in operation expression`,
@@ -86,7 +88,9 @@ export const getMonkeyBusinessLevel = (
   ]
     .map((match) => createMonkey(match));
 
-  const m = getDivisorProduct(monkeys);
+  const m = worryLevelDivisor === 1
+    ? getDivisorProduct(monkeys)
+    : undefined
 
   for (let i = 0; i < rounds; i++) {
     for (const monkey of monkeys) {
