@@ -9,7 +9,11 @@ interface Node<T> {
   value?: T;
 }
 
-const createNode = <T>(x: number, y: number, nodes: Map<string, Node<T>>): Node<T> => {
+const createNode = <T>(
+  x: number,
+  y: number,
+  nodes: Map<string, Node<T>>,
+): Node<T> => {
   if (nodes.has(`${x}-${y}`)) {
     return nodes.get(`${x}-${y}`)!;
   }
@@ -21,10 +25,9 @@ const createNode = <T>(x: number, y: number, nodes: Map<string, Node<T>>): Node<
   return node;
 };
 
-const buildGraph = (rows: string[]): [Node<string>?, Node<string>?] => {
+const buildGraph = (rows: string[]): Node<string> => {
   const nodes = new Map<string, Node<string>>();
   let sourcePos = [0, 0];
-  let targetPos = [0, 0];
 
   for (let y = 0; y < rows.length; y++) {
     for (let x = 0; x < rows[y].length; x++) {
@@ -35,10 +38,6 @@ const buildGraph = (rows: string[]): [Node<string>?, Node<string>?] => {
 
       if (node.value === SOURCE_NODE_VALUE) {
         sourcePos = [x, y];
-      }
-
-      if (node.value === TARGET_NODE_VALUE) {
-        targetPos = [x, y];
       }
 
       if (x > 0) {
@@ -59,12 +58,30 @@ const buildGraph = (rows: string[]): [Node<string>?, Node<string>?] => {
     }
   }
 
-  return [nodes.get(sourcePos.join("-")), nodes.get(targetPos.join("-"))];
+  return nodes.get(sourcePos.join("-")) || {};
 };
+
+const getCodePoint = (x?: string) => (x?.codePointAt(0) || 0);
 
 export const getShortestPathStepCount = (input: string) => {
   const rows = input.split("\n").filter(Boolean); // LF
-  const [source, target] = buildGraph(rows);
+  const source = buildGraph(rows);
 
-  return 0;
+  const traverse = (node: Node<string>, steps = 0) => {
+    if (node.value === TARGET_NODE_VALUE) {
+      return steps;
+    }
+
+    [node.north, node.south, node.east, node.west].forEach((neighbour) => {
+      if (
+        neighbour &&
+        Math.abs(getCodePoint(neighbour.value) - getCodePoint(node.value)) <= 1
+      ) {
+        traverse(neighbour, steps + 1);
+      }
+    });
+  };
+
+  console.log("****", traverse(source!));
+  return traverse(source!);
 };
