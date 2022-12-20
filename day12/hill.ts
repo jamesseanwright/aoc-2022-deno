@@ -3,7 +3,16 @@ const TARGET_NODE_VALUE = "E";
 
 type Cell = [number, number];
 
-const getCodePoint = (x?: string) => (x?.codePointAt(0) || 0);
+const getCodePoint = (x?: string) => {
+  switch (x) {
+    case SOURCE_NODE_VALUE:
+      return ("a".codePointAt(0) || 0);
+    case TARGET_NODE_VALUE:
+      return ("z".codePointAt(0) || 0);
+    default:
+      return (x?.codePointAt(0) || 0);
+  }
+};
 
 export const getShortestPathStepCount = (input: string) => {
   const rows = input.split("\n").filter(Boolean); // LF
@@ -21,21 +30,21 @@ export const getShortestPathStepCount = (input: string) => {
     currentPath.push([x, y]);
 
     if (rows[y][x] === TARGET_NODE_VALUE) {
+      console.log('********* FOUND PATH!', currentPath);
+      paths.push(currentPath);
       return;
     }
 
     ([[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]] as Cell[])
       .forEach(([nx, ny]) => {
         const canVisit = rows[ny]?.[nx] &&
-          !currentPath.some(([vx, vy]) => nx === vx && vy === vy) &&
-          (rows[y][x] === SOURCE_NODE_VALUE ||
-            Math.abs(getCodePoint(rows[ny][nx]) - getCodePoint(rows[y][x])) <=
-              1);
+          !currentPath.some(([vx, vy]) => nx === vx && ny === vy) &&
+          // TODO: rejig source node check to offset by neighbour; isn't always next to an 'a'!
+          (Math.abs(getCodePoint(rows[ny][nx]) - getCodePoint(rows[y][x])) <=
+            1);
 
         if (canVisit) {
           getPaths([nx, ny], [...currentPath], paths);
-        } else {
-          paths.push(currentPath);
         }
       });
   };
@@ -44,5 +53,5 @@ export const getShortestPathStepCount = (input: string) => {
 
   getPaths(start, [], paths);
 
-  return paths.toSorted((a, b) => a.length - b.length)[0].length;
+  return paths.toSorted((a, b) => a.length - b.length)[0].length - 1;
 };
