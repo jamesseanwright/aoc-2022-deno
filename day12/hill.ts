@@ -2,6 +2,68 @@ const SOURCE_NODE_VALUE = "S";
 const TARGET_NODE_VALUE = "E";
 
 type Cell = [number, number];
+type Queue<T> = Pick<Node<T>[], "unshift" | "pop" | "length">;
+
+interface Node<T> {
+  value: T;
+  visited: boolean;
+  distance: number;
+  children: Node<T>[];
+}
+
+const createNode = <T>(value: T): Node<T> => ({
+  value,
+  visited: false,
+  distance: 0,
+  children: [],
+});
+
+const getHash = (cell: Cell) => cell.join("-");
+
+const getOrCreateNode = (
+  cell: Cell,
+  value: string,
+  visited: Map<string, Node<string>>,
+): Node<string> => {
+  const visitedNode = visited.get(getHash(cell));
+
+  if (visitedNode) {
+    return visitedNode;
+  }
+
+  const node = createNode(value);
+
+  visited.set(getHash(cell), node);
+
+  return node;
+};
+
+const getChildren = (
+  [x, y]: Cell,
+  rows: string[],
+  visited: Map<string, Node<string>>,
+): Node<string>[] =>
+  ([[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]] as Cell[])
+    .filter(([nx, ny]) => rows[ny]?.[nx])
+    .map(([nx, ny]) => getOrCreateNode([nx, ny], rows[ny][nx], visited));
+
+const buildGraph = (rows: string[]): Node<string> => {
+  const visited = new Map<string, Node<string>>();
+  let startNode: Node<string> = createNode("");
+
+  for (let y = 0; y < rows.length; y++) {
+    for (let x = 0; x < rows[y].length; x++) {
+      const node = getOrCreateNode([x, y], rows[y][x], visited);
+      node.children = getChildren([x, y], rows, visited);
+
+      if (rows[y][x] === SOURCE_NODE_VALUE) {
+        startNode = node;
+      }
+    }
+  }
+
+  return startNode;
+};
 
 const getCodePoint = (x?: string) => {
   switch (x) {
@@ -16,40 +78,34 @@ const getCodePoint = (x?: string) => {
 
 export const getShortestPathStepCount = (input: string) => {
   const rows = input.split("\n").filter(Boolean); // LF
-  let start: Cell = [-1, -1];
 
-  for (let y = 0; y < rows.length; y++) {
-    for (let x = 0; x < rows[y].length; x++) {
-      if (rows[y][x] === SOURCE_NODE_VALUE) {
-        start = [x, y];
+  const getShortestPathBF = (startNode: Node<string>) => {
+    const queue: Queue<string> = [startNode];
+
+    while (queue.length > 0) {
+      const node = queue.pop()!;
+
+      if (!node.visited) {
+        node.visited = true;
+
+        for (const neighbour of node.children) {
+          neighbour.distance = node.distance + 1;
+
+          if (neighbour.value === TARGET_NODE_VALUE) {
+            return neighbour.distance;
+          }
+
+          if (
+            (Math.abs(
+              getCodePoint(neighbour.value) - getCodePoint(node.value),
+            ) <= 1)
+          ) {
+            queue.unshift(neighbour);
+          }
+        }
       }
     }
-  }
-
-  const getPaths = ([x, y]: Cell, currentPath: Cell[], paths: Cell[][]) => {
-    currentPath.push([x, y]);
-
-    if (rows[y][x] === TARGET_NODE_VALUE) {
-      paths.push(currentPath);
-      return;
-    }
-
-    ([[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]] as Cell[])
-      .forEach(([nx, ny]) => {
-        const canVisit = rows[ny]?.[nx] &&
-          !currentPath.some(([vx, vy]) => nx === vx && ny === vy) &&
-          (Math.abs(getCodePoint(rows[ny][nx]) - getCodePoint(rows[y][x])) <=
-            1);
-
-        if (canVisit) {
-          getPaths([nx, ny], [...currentPath], paths);
-        }
-      });
   };
 
-  const paths: Cell[][] = [];
-
-  getPaths(start, [], paths);
-
-  return paths.toSorted((a, b) => a.length - b.length)[0].length - 1;
+  return getShortestPathBF(buildGraph(rows));
 };
