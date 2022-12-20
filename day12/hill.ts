@@ -14,7 +14,7 @@ interface Node<T> {
 const createNode = <T>(value: T): Node<T> => ({
   value,
   visited: false,
-  distance: 0,
+  distance: Number.POSITIVE_INFINITY,
   children: [],
 });
 
@@ -88,12 +88,12 @@ export const getShortestPathStepCount = (input: string) => {
       if (!node.visited) {
         node.visited = true;
 
+        if (node.value === TARGET_NODE_VALUE) {
+          return node.distance;
+        }
+
         for (const neighbour of node.children) {
           neighbour.distance = node.distance + 1;
-
-          if (neighbour.value === TARGET_NODE_VALUE) {
-            return neighbour.distance;
-          }
 
           if (
             (Math.abs(
@@ -107,5 +107,8 @@ export const getShortestPathStepCount = (input: string) => {
     }
   };
 
-  return getShortestPathBF(buildGraph(rows));
+  const startNode = buildGraph(rows);
+  startNode.distance = 0;
+
+  return getShortestPathBF(startNode);
 };
