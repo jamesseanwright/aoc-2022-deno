@@ -30,7 +30,6 @@ export const getShortestPathStepCount = (input: string) => {
     currentPath.push([x, y]);
 
     if (rows[y][x] === TARGET_NODE_VALUE) {
-      console.log('********* FOUND PATH!', currentPath);
       paths.push(currentPath);
       return;
     }
