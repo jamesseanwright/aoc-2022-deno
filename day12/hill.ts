@@ -39,7 +39,6 @@ export const getShortestPathStepCount = (input: string) => {
       .forEach(([nx, ny]) => {
         const canVisit = rows[ny]?.[nx] &&
           !currentPath.some(([vx, vy]) => nx === vx && ny === vy) &&
-          // TODO: rejig source node check to offset by neighbour; isn't always next to an 'a'!
           (Math.abs(getCodePoint(rows[ny][nx]) - getCodePoint(rows[y][x])) <=
             1);
 
