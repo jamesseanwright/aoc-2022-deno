@@ -6,5 +6,5 @@ const mainInput = Deno.readTextFileSync("./day12/main_input.txt");
 
 Deno.test("getShortestPathStepCount() should return the number of steps for the shortest path from S to E", () => {
   assertEquals(getShortestPathStepCount(exampleInput), 31);
-  // assertEquals(getShortestPathStepCount(mainInput), -1);
+  assertEquals(getShortestPathStepCount(mainInput), -1);
 });
