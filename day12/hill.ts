@@ -108,7 +108,7 @@ const getShortestPathBFS = (sourceNode: Node<string>) => {
 
 export const getShortestPathStepCount = (
   input: string,
-  sourceNodeValues = [DEFAULT_SOURCE_NODE_VALUE],
+  ...sourceNodeValues: string[]
 ) =>
   buildGraph(input.split("\n").filter(Boolean), sourceNodeValues)
     .map((sourceNode) => getShortestPathBFS(sourceNode))
