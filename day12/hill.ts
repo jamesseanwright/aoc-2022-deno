@@ -97,9 +97,10 @@ export const getShortestPathStepCount = (input: string) => {
 
   const getShortestPathBF = (startNode: Node<string>) => {
     const queue: Queue<string> = [startNode];
+    let node = startNode;
 
     while (queue.length > 0) {
-      const node = queue.pop()!;
+      node = queue.pop()!;
 
       if (!node.visited) {
         debug(node);
@@ -122,6 +123,8 @@ export const getShortestPathStepCount = (input: string) => {
         }
       }
     }
+
+    return node.distance;
   };
 
   return getShortestPathBF(buildGraph(rows));
