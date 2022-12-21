@@ -2,17 +2,15 @@ const DEFAULT_SOURCE_NODE_VALUE = "S";
 const TARGET_NODE_VALUE = "E";
 
 type Cell = [number, number];
-type Queue<T> = Pick<Node<T>[], "unshift" | "pop" | "length">;
+type Queue<T> = Pick<T[], "unshift" | "pop" | "length">;
 
 interface Node<T> {
   value: T;
-  distance: number;
   children: Node<T>[];
 }
 
 const createNode = <T>(value: T): Node<T> => ({
   value,
-  distance: 0,
   children: [],
 });
 
@@ -78,32 +76,34 @@ const getCodePoint = (x?: string) => {
 };
 
 const getShortestPathBFS = (sourceNode: Node<string>) => {
-  const queue: Queue<string> = [sourceNode];
+  const queue: Queue<[Node<string>, number]> = [];
   const visited = new Set<Node<string>>();
   let node = sourceNode;
+  let distance = Number.POSITIVE_INFINITY;
+
+  queue.unshift([sourceNode, 0])
 
   while (queue.length > 0) {
-    node = queue.pop()!;
+    [node, distance] = queue.pop()!;
 
     if (!visited.has(node)) {
       visited.add(node);
 
       if (node.value === TARGET_NODE_VALUE) {
-        return node.distance;
+        return distance;
       }
 
       for (const neighbour of node.children) {
         if (
           getCodePoint(neighbour.value) - getCodePoint(node.value) <= 1
         ) {
-          neighbour.distance = node.distance + 1;
-          queue.unshift(neighbour);
+          queue.unshift([neighbour, distance + 1]);
         }
       }
     }
   }
 
-  return Number.POSITIVE_INFINITY;
+  return distance;
 };
 
 export const getShortestPathStepCount = (
