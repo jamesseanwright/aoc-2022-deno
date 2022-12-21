@@ -104,8 +104,5 @@ const getShortestPathBFS = (startNode: Node<string>) => {
   return Number.POSITIVE_INFINITY;
 };
 
-export const getShortestPathStepCount = (input: string) => {
-  const rows = input.split("\n").filter(Boolean); // LF
-
-  return getShortestPathBFS(buildGraph(rows));
-};
+export const getShortestPathStepCount = (input: string) =>
+  getShortestPathBFS(buildGraph(input.split("\n").filter(Boolean)));
