@@ -6,15 +6,13 @@ type Queue<T> = Pick<Node<T>[], "unshift" | "pop" | "length">;
 
 interface Node<T> {
   value: T;
-  cell: Cell; // TODO: remove
   visited: boolean;
   distance: number;
   children: Node<T>[];
 }
 
-const createNode = <T>(value: T, cell: Cell): Node<T> => ({
+const createNode = <T>(value: T): Node<T> => ({
   value,
-  cell,
   visited: false,
   distance: 0,
   children: [],
@@ -33,7 +31,7 @@ const getOrCreateNode = (
     return visitedNode;
   }
 
-  const node = createNode(value, cell);
+  const node = createNode(value);
 
   visited.set(getHash(cell), node);
 
@@ -51,7 +49,7 @@ const getChildren = (
 
 const buildGraph = (rows: string[]): Node<string> => {
   const visited = new Map<string, Node<string>>();
-  let startNode: Node<string> = createNode("", [-1, -1]);
+  let startNode: Node<string> = createNode("");
 
   for (let y = 0; y < rows.length; y++) {
     for (let x = 0; x < rows[y].length; x++) {
@@ -76,20 +74,6 @@ const getCodePoint = (x?: string) => {
     default:
       return (x?.codePointAt(0) || 0);
   }
-};
-
-const debug = (x: Node<string>) => {
-  console.log("****** START");
-  console.log(
-    "****** line, col:",
-    x.cell.map((a) => a + 1).toReversed().join(", "),
-  );
-  console.log("****** value:", x.value);
-  console.log("****** visited:", x.visited);
-  console.log(
-    "****** children:",
-    ...x.children.map(({ value, visited }) => `{${value}, ${visited}}`),
-  );
 };
 
 export const getShortestPathStepCount = (input: string) => {
