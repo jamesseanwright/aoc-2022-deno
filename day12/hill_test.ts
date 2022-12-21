@@ -9,5 +9,5 @@ Deno.test("getShortestPathStepCount() should return the number of steps for the 
   assertEquals(getShortestPathStepCount(mainInput, "S"), 520);
 
   assertEquals(getShortestPathStepCount(exampleInput, "S", "a"), 29);
-  assertEquals(getShortestPathStepCount(mainInput, "S", "a"), -1);
+  assertEquals(getShortestPathStepCount(mainInput, "S", "a"), 508);
 });

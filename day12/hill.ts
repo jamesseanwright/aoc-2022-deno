@@ -79,9 +79,9 @@ const getShortestPathBFS = (sourceNode: Node<string>) => {
   const queue: Queue<[Node<string>, number]> = [];
   const visited = new Set<Node<string>>();
   let node = sourceNode;
-  let distance = Number.POSITIVE_INFINITY;
+  let distance = 0;
 
-  queue.unshift([sourceNode, 0])
+  queue.unshift([sourceNode, 0]);
 
   while (queue.length > 0) {
     [node, distance] = queue.pop()!;
@@ -103,7 +103,7 @@ const getShortestPathBFS = (sourceNode: Node<string>) => {
     }
   }
 
-  return distance;
+  return Number.POSITIVE_INFINITY;
 };
 
 export const getShortestPathStepCount = (
