@@ -1,4 +1,4 @@
-const SOURCE_NODE_VALUE = "S";
+const DEFAULT_SOURCE_NODE_VALUE = "S";
 const TARGET_NODE_VALUE = "E";
 
 type Cell = [number, number];
@@ -47,27 +47,27 @@ const getChildren = (
     .filter(([nx, ny]) => rows[ny]?.[nx])
     .map(([nx, ny]) => getOrCreateNode([nx, ny], rows[ny][nx], visited));
 
-const buildGraph = (rows: string[]): Node<string> => {
+const buildGraph = (rows: string[], sourceNodeValue = DEFAULT_SOURCE_NODE_VALUE): Node<string>[] => {
   const visited = new Map<string, Node<string>>();
-  let startNode: Node<string> = createNode("");
+  const sourceNodes: Node<string>[] = [];
 
   for (let y = 0; y < rows.length; y++) {
     for (let x = 0; x < rows[y].length; x++) {
       const node = getOrCreateNode([x, y], rows[y][x], visited);
       node.children = getChildren([x, y], rows, visited);
 
-      if (rows[y][x] === SOURCE_NODE_VALUE) {
-        startNode = node;
+      if (rows[y][x] === sourceNodeValue) {
+        sourceNodes.push(node);
       }
     }
   }
 
-  return startNode;
+  return sourceNodes;
 };
 
 const getCodePoint = (x?: string) => {
   switch (x) {
-    case SOURCE_NODE_VALUE:
+    case DEFAULT_SOURCE_NODE_VALUE:
       return ("a".codePointAt(0) || 0);
     case TARGET_NODE_VALUE:
       return ("z".codePointAt(0) || 0);
@@ -76,9 +76,9 @@ const getCodePoint = (x?: string) => {
   }
 };
 
-const getShortestPathBFS = (startNode: Node<string>) => {
-  const queue: Queue<string> = [startNode];
-  let node = startNode;
+const getShortestPathBFS = (sourceNode: Node<string>) => {
+  const queue: Queue<string> = [sourceNode];
+  let node = sourceNode;
 
   while (queue.length > 0) {
     node = queue.pop()!;
@@ -105,4 +105,4 @@ const getShortestPathBFS = (startNode: Node<string>) => {
 };
 
 export const getShortestPathStepCount = (input: string) =>
-  getShortestPathBFS(buildGraph(input.split("\n").filter(Boolean)));
+  getShortestPathBFS(buildGraph(input.split("\n").filter(Boolean))[0]);
