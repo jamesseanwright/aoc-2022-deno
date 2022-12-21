@@ -103,7 +103,6 @@ export const getShortestPathStepCount = (input: string) => {
       node = queue.pop()!;
 
       if (!node.visited) {
-        debug(node);
         node.visited = true;
 
         if (node.value === TARGET_NODE_VALUE) {
@@ -111,20 +110,17 @@ export const getShortestPathStepCount = (input: string) => {
         }
 
         for (const neighbour of node.children) {
-          neighbour.distance = node.distance + 1;
-
           if (
-            (Math.abs(
-              getCodePoint(neighbour.value) - getCodePoint(node.value),
-            ) <= 1)
+            getCodePoint(neighbour.value) - getCodePoint(node.value) <= 1
           ) {
+            neighbour.distance = node.distance + 1;
             queue.unshift(neighbour);
           }
         }
       }
     }
 
-    return node.distance;
+    return Number.POSITIVE_INFINITY;
   };
 
   return getShortestPathBF(buildGraph(rows));
