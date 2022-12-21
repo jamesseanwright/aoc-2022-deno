@@ -76,36 +76,36 @@ const getCodePoint = (x?: string) => {
   }
 };
 
-export const getShortestPathStepCount = (input: string) => {
-  const rows = input.split("\n").filter(Boolean); // LF
+const getShortestPathBFS = (startNode: Node<string>) => {
+  const queue: Queue<string> = [startNode];
+  let node = startNode;
 
-  const getShortestPathBF = (startNode: Node<string>) => {
-    const queue: Queue<string> = [startNode];
-    let node = startNode;
+  while (queue.length > 0) {
+    node = queue.pop()!;
 
-    while (queue.length > 0) {
-      node = queue.pop()!;
+    if (!node.visited) {
+      node.visited = true;
 
-      if (!node.visited) {
-        node.visited = true;
+      if (node.value === TARGET_NODE_VALUE) {
+        return node.distance;
+      }
 
-        if (node.value === TARGET_NODE_VALUE) {
-          return node.distance;
-        }
-
-        for (const neighbour of node.children) {
-          if (
-            getCodePoint(neighbour.value) - getCodePoint(node.value) <= 1
-          ) {
-            neighbour.distance = node.distance + 1;
-            queue.unshift(neighbour);
-          }
+      for (const neighbour of node.children) {
+        if (
+          getCodePoint(neighbour.value) - getCodePoint(node.value) <= 1
+        ) {
+          neighbour.distance = node.distance + 1;
+          queue.unshift(neighbour);
         }
       }
     }
+  }
 
-    return Number.POSITIVE_INFINITY;
-  };
+  return Number.POSITIVE_INFINITY;
+};
 
-  return getShortestPathBF(buildGraph(rows));
+export const getShortestPathStepCount = (input: string) => {
+  const rows = input.split("\n").filter(Boolean); // LF
+
+  return getShortestPathBFS(buildGraph(rows));
 };
